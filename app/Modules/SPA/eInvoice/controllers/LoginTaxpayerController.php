@@ -1,7 +1,7 @@
 <?php
 
-namespace app\Modules\SPA\eInvoice\Controllers;
-use app\Http\Controllers\Controller;
+namespace App\Modules\SPA\eInvoice\Controllers;
+use App\Http\Controllers\Controller;
 
 class LoginTaxpayerController extends Controller
 {
