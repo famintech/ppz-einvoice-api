@@ -28,16 +28,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy entire project first (including artisan)
+# Copy entire project
 COPY . .
 
 # Install dependencies
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-# Generate Laravel optimization files
+# Generate Laravel optimization files (excluding view cache for API-only)
 RUN php artisan optimize && \
     php artisan route:cache && \
-    php artisan config:cache
+    php artisan config:cache && \
+    php artisan event:cache
 
 # Production stage
 FROM php:8.2-fpm-alpine
