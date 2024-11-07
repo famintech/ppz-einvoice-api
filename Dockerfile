@@ -34,10 +34,9 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-# Generate Laravel optimization files (excluding view cache for API-only)
-RUN php artisan optimize && \
+# Generate Laravel optimization files (API specific)
+RUN php artisan config:cache && \
     php artisan route:cache && \
-    php artisan config:cache && \
     php artisan event:cache
 
 # Production stage
