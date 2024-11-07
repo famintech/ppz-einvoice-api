@@ -26,7 +26,7 @@ COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/ppz-einvoice-api
 
 # Copy entire project
 COPY . .
@@ -53,17 +53,17 @@ COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/ppz-einvoice-api
 
 # Copy application from builder
-COPY --from=builder /var/www .
+COPY --from=builder /var/www/ppz-einvoice-api .
 
 # Create system user
 RUN addgroup -g 1000 laravel && \
-    adduser -u 1000 -G laravel -h /var/www -s /bin/sh -D laravel
+    adduser -u 1000 -G laravel -h /var/www/ppz-einvoice-api -s /bin/sh -D laravel
 
 # Set proper permissions
-RUN chown -R laravel:laravel /var/www/storage /var/www/bootstrap/cache
+RUN chown -R laravel:laravel /var/www/ppz-einvoice-api/storage /var/www/ppz-einvoice-api/bootstrap/cache
 
 # Switch to non-root user
 USER laravel
