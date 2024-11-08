@@ -24,7 +24,7 @@ abstract class BaseApiController extends Controller
     protected function makeRequest($method, $endpoint, $params = [], $useFormRequest = false)
     {
         $request = Http::withToken(request()->bearerToken());
-        
+
         if ($useFormRequest) {
             $request = $request->asForm();
         }
@@ -59,12 +59,18 @@ abstract class BaseApiController extends Controller
         if (!$response->successful()) {
             return response()->json([
                 ...$customResponse,
-                'error' => $response->body(),
+                'error' => $response->json() ?? $response->body(),
                 'status' => $response->status()
             ], $response->status());
         }
 
         $responseData = $response->json() ?? [];
-        return response()->json($customResponse + $responseData);
+        Log::info('API Response', ['data' => $responseData]); // Add this to debug
+
+        return response()->json([
+            ...$customResponse,
+            'data' => $responseData,
+            'status' => $response->status()
+        ]);
     }
 }
