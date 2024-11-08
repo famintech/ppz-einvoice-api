@@ -26,18 +26,28 @@ class LoginTaxpayerController extends Controller
         $this->clientSecret = LHDN::getClientSecret();
     }
 
-    /**
+   /**
      * @OA\Get(
      *     path="/api/spa/einvoice/login-taxpayer",
-     *     summary="Login taxpayer and get access token",
-     *     tags={"Authentication"},
+     *     summary="Login LHDN Taxpayer and get access token",
+     *     tags={"LHDN SDK Platform API"},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."),
-     *             @OA\Property(property="expires_in", type="integer", example=3600),
-     *             @OA\Property(property="token_type", type="string", example="Bearer")
+     *             @OA\Property(property="access_token", type="string", description="Encoded JWT token structure that contains the fields of the issued token", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."),
+     *             @OA\Property(property="token_type", type="string", description="Solution in this case returns only Bearer authentication tokens", example="Bearer"),
+     *             @OA\Property(property="expires_in", type="integer", description="The lifetime of the access token defined in seconds", example=3600),
+     *             @OA\Property(property="scope", type="string", description="Optional if matches the requested scope. Otherwise contains information on scope granted to token", example="InvoicingAPI")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", description="Error type", example="invalid_request"),
+     *             @OA\Property(property="error_description", type="string", description="Detailed error message", example="User blocked"),
+     *             @OA\Property(property="error_uri", type="string", description="Optional URI with more error details", example="https://api.myinvois.hasil.gov.my/docs/errors/400")
      *         )
      *     ),
      *     @OA\Response(
