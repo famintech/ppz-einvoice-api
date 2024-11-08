@@ -21,9 +21,14 @@ abstract class BaseApiController extends Controller
         $this->clientSecret = LHDN::getClientSecret();
     }
 
-    protected function makeRequest($method, $endpoint, $params = [], $useFormRequest = false)
+    protected function makeRequest($method, $endpoint, $params = [], $useFormRequest = false, $headers = [])
     {
         $request = Http::withToken(request()->bearerToken());
+
+        // Add custom headers
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeaders([$key => $value]);
+        }
 
         if ($useFormRequest) {
             $request = $request->asForm();
@@ -31,25 +36,23 @@ abstract class BaseApiController extends Controller
 
         $url = $this->baseUrl . $endpoint;
 
-        // Build the final URL with query parameters for GET requests
-        $finalUrl = $url;
-        if ($method === 'GET' && !empty($params)) {
-            $finalUrl .= '?' . http_build_query($params);
-        }
-
         Log::info('Making API request', [
             'method' => $method,
-            'finalUrl' => $finalUrl,
-            'params' => $useFormRequest ? $params : []
+            'url' => $url,
+            'headers' => $headers,
+            'isRawBody' => !is_array($params)
         ]);
 
-        $response = $request->{strtolower($method)}($url, $params);
+        // Handle raw body vs array params
+        $response = is_array($params)
+            ? $request->{strtolower($method)}($url, $params)
+            : $request->{strtolower($method)}($url, [], $params);
 
         if (!$response->successful()) {
             Log::error('API request failed', [
                 'status' => $response->status(),
                 'body' => $response->body(),
-                'finalUrl' => $finalUrl
+                'url' => $url
             ]);
         }
 
