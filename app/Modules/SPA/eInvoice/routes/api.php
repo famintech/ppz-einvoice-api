@@ -17,6 +17,6 @@ Route::prefix('spa/einvoice/lhdn/platform')->group(function () {
 });
 
 Route::prefix('spa/einvoice/lhdn/einvoicing')->group(function () {
-    Route::get('/validate-tin-taxpayer/{tin}', ValidateTINTaxpayerController::class);
+    Route::get('/validate-tin-taxpayer', ValidateTINTaxpayerController::class);
 });
 

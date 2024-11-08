@@ -18,13 +18,15 @@ class ValidateTINTaxpayerController extends BaseApiController
             'idValue' => 'required|string',
         ]);
 
+        $queryParams = [
+            'idType' => $validated['idType'],
+            'idValue' => $validated['idValue']
+        ];
+
         return $this->makeRequest(
             'GET',
-            "/api/v1.0/taxpayer/validate/{$validated['tin']}",
-            [
-                'idType' => $validated['idType'],
-                'idValue' => $validated['idValue'],
-            ]
+            "/api/v1/spa/einvoice/lhdn/einvoicing/validate-tin-taxpayer/{$validated['tin']}", 
+            $queryParams
         );
     }
 }
