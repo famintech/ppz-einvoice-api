@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Modules\SPA\eInvoice\Http\Controllers;
+namespace App\Modules\SPA\eInvoice\Http\Controllers\Platform;
+
+use App\Modules\SPA\eInvoice\Http\Controllers\BaseApiController;
 
 class GetDocumentTypeController extends BaseApiController
 {

@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Modules\SPA\eInvoice\Http\Controllers\LoginTaxpayerController;
-use App\Modules\SPA\eInvoice\Http\Controllers\GetAllDocumentTypesController;
-use App\Modules\SPA\eInvoice\Http\Controllers\GetDocumentTypeController;
-use App\Modules\SPA\eInvoice\Http\Controllers\GetDocumentTypeVersionController;
-use App\Modules\SPA\eInvoice\Http\Controllers\GetNotificationsController;
+use App\Modules\SPA\eInvoice\Http\Controllers\Platform\LoginTaxpayerController;
+use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetAllDocumentTypesController;
+use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetDocumentTypeController;
+use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetDocumentTypeVersionController;
+use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetNotificationsController;
 
 Route::prefix('spa/einvoice')->group(function () {
     Route::get('/login-taxpayer', LoginTaxpayerController::class);
