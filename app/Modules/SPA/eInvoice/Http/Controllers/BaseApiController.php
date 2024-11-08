@@ -23,19 +23,12 @@ abstract class BaseApiController extends Controller
     protected function makeRequest($method, $endpoint, $params = [], $useFormRequest = false)
     {
         $request = Http::withToken(request()->bearerToken());
-
+        
         if ($useFormRequest) {
             $request = $request->asForm();
         }
 
-        $url = $this->baseUrl . $endpoint;
-
-        if ($method === 'GET' && !empty($params)) {
-            $url .= '?' . http_build_query($params);
-            $params = []; 
-        }
-
-        $response = $request->{strtolower($method)}($url, $params);
+        $response = $request->{strtolower($method)}($this->baseUrl . $endpoint, $params);
 
         return $this->formatResponse($response);
     }
