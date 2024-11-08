@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Http;
  *     title="PPZ SPA eInvoice API Documentation",
  *     description="API documentation for PPZ SPA eInvoice system"
  * )
+ * 
+ * @OA\Tag(
+ *     name="SPA"
+ * )
+ * 
+ * @OA\Tag(
+ *     name="SPA/eInvoice",
+ * )
+ * 
+ * @OA\Tag(
+ *     name="SPA/eInvoice/LHDN Platform API",
+ * )
  */
 class LoginTaxpayerController extends Controller
 {
@@ -30,7 +42,7 @@ class LoginTaxpayerController extends Controller
      * @OA\Get(
      *     path="/api/spa/einvoice/login-taxpayer",
      *     summary="Login LHDN Taxpayer and get access token",
-     *     tags={"LHDN SDK Platform API"},
+     *     tags={"SPA/eInvoice/LHDN Platform API"},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
