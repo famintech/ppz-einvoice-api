@@ -10,13 +10,17 @@ class ValidateTINTaxpayerController extends BaseApiController
 {
     private const ALLOWED_ID_TYPES = ['NRIC', 'PASSPORT', 'BRN', 'ARMY'];
 
-    public function __invoke(Request $request)
+    public function __invoke(string $tin, string $idType, string $idValue)
     {
-        $validated = $request->validate([
+        $validated = validator([
+            'tin' => $tin,
+            'idType' => $idType,
+            'idValue' => $idValue
+        ], [
             'tin' => 'required|string',
             'idType' => ['required', Rule::in(self::ALLOWED_ID_TYPES)],
             'idValue' => 'required|string',
-        ]);
+        ])->validate();
 
         $queryParams = [
             'idType' => $validated['idType'],
