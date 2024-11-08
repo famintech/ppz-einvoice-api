@@ -6,7 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        api: dirname(__DIR__) . '/app/Modules/SPA/eInvoice/Routes/api.php',
+        api: __DIR__.'/../app/Modules/SPA/eInvoice/Routes/api.php',
         apiPrefix: 'api/v1',
         health: '/up',
     )
