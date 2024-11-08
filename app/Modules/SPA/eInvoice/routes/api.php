@@ -16,7 +16,11 @@ Route::prefix('spa/einvoice/lhdn/platform')->group(function () {
     Route::get('/notifications/taxpayer', GetNotificationsController::class);
 });
 
+// Route::prefix('spa/einvoice/lhdn/einvoicing')->group(function () {
+//     Route::get('/validate-tin-taxpayer/{tin}/{idType}/{idValue}', ValidateTINTaxpayerController::class);
+// });
+
 Route::prefix('spa/einvoice/lhdn/einvoicing')->group(function () {
-    Route::get('/validate-tin-taxpayer/{tin}/{idType}/{idValue}', ValidateTINTaxpayerController::class);
+    Route::get('/validate-tin-taxpayer/{tin}', ValidateTINTaxpayerController::class);
 });
 
