@@ -37,8 +37,7 @@ RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoload
 # Generate Laravel optimization files (API specific)
 RUN php artisan config:cache && \
     php artisan route:cache && \
-    php artisan event:cache && \
-    php artisan l5-swagger:generate
+    php artisan event:cache 
 
 # Production stage
 FROM php:8.2-fpm-alpine
