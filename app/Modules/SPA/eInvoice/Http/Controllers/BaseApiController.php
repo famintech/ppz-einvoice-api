@@ -30,10 +30,17 @@ abstract class BaseApiController extends Controller
         }
 
         $url = $this->baseUrl . $endpoint;
+
+        // Build the final URL with query parameters for GET requests
+        $finalUrl = $url;
+        if ($method === 'GET' && !empty($params)) {
+            $finalUrl .= '?' . http_build_query($params);
+        }
+
         Log::info('Making API request', [
             'method' => $method,
-            'url' => $url,
-            'params' => $params
+            'finalUrl' => $finalUrl,
+            'params' => $useFormRequest ? $params : []
         ]);
 
         $response = $request->{strtolower($method)}($url, $params);
@@ -41,7 +48,8 @@ abstract class BaseApiController extends Controller
         if (!$response->successful()) {
             Log::error('API request failed', [
                 'status' => $response->status(),
-                'body' => $response->body()
+                'body' => $response->body(),
+                'finalUrl' => $finalUrl
             ]);
         }
 
