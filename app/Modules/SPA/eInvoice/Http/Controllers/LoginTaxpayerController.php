@@ -3,7 +3,7 @@
 namespace App\Modules\SPA\eInvoice\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\SPA\eInvoice\Config\LHDN;
+use App\Modules\SPA\eInvoice\config\LHDN;
 
 class LoginTaxpayerController extends Controller
 {
