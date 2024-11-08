@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Http;
  * )
  * 
  * @OA\Tag(
- *     name="SPA"
+ *     name="SPA",
  *     description="Sistem Pengurusan Akaun"
  * )
  * 
