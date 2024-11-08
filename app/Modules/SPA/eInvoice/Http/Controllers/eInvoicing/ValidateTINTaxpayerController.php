@@ -25,7 +25,7 @@ class ValidateTINTaxpayerController extends BaseApiController
 
         return $this->makeRequest(
             'GET',
-            "/api/v1/spa/einvoice/lhdn/einvoicing/validate-tin-taxpayer/{$validated['tin']}", 
+            "/api/v1.0/taxpayer/validate/{$validated['tin']}",
             $queryParams
         );
     }
