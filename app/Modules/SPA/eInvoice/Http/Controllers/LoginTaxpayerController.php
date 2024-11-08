@@ -30,7 +30,7 @@ class LoginTaxpayerController extends Controller
 
         $customResponse = [
             'api' => 'PPZ Central API',
-            'time' => now()->setTimezone('Asia/Kuala_Lumpur')->format('h:i'),
+            'time' => now()->setTimezone('Asia/Kuala_Lumpur')->format('h:i A'),
             'date' => now()->setTimezone('Asia/Kuala_Lumpur')->format('d/m/Y'),
         ];
 
