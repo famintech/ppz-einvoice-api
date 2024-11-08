@@ -15,14 +15,17 @@ use Illuminate\Support\Facades\Http;
  * 
  * @OA\Tag(
  *     name="SPA"
+ *     description="Sistem Pengurusan Akaun"
  * )
  * 
  * @OA\Tag(
- *     name="SPA/eInvoice",
+ *     name="eInvoice",
+ *     description="eInvoice APIs"
  * )
  * 
  * @OA\Tag(
- *     name="SPA/eInvoice/LHDN Platform API",
+ *     name="LHDN Platform API",
+ *     description="LHDN MyInvois Integration APIs"
  * )
  */
 class LoginTaxpayerController extends Controller
@@ -42,7 +45,7 @@ class LoginTaxpayerController extends Controller
      * @OA\Get(
      *     path="/api/spa/einvoice/login-taxpayer",
      *     summary="Login LHDN Taxpayer and get access token",
-     *     tags={"SPA/eInvoice/LHDN Platform API"},
+     *     tags={"LHDN Platform API"},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
