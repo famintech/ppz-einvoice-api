@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\SPA\Config;
+namespace App\Modules\SPA\eInvoice\Config;
 
 class LHDN
 {
