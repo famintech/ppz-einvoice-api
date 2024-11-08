@@ -19,7 +19,7 @@ class LoginTaxpayerController extends Controller
         $this->clientSecret = LHDN::getClientSecret();
     }
 
-    public function login()
+    public function __invoke()
     {
         $response = Http::asForm()->post($this->baseUrl . '/connect/token', [
             'client_id' => $this->clientId,
