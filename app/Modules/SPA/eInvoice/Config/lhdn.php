@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\SPA\eInvoice\config;
+namespace App\Modules\SPA\eInvoice\Config;
 
-class LHDN
+class lhdn
 {
     public static function getApiBaseUrl()
     {
