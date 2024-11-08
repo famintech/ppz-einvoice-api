@@ -29,7 +29,7 @@ class LoginTaxpayerController extends Controller
         ]);
 
         $customResponse = [
-            'api' => 'PPZ Central API',
+            'api' => 'PPZ Central API: SPA eInvoice',
             'time' => now()->setTimezone('Asia/Kuala_Lumpur')->format('h:i A'),
             'date' => now()->setTimezone('Asia/Kuala_Lumpur')->format('d/m/Y'),
         ];
