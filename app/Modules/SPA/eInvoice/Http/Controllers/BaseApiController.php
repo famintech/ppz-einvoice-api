@@ -64,12 +64,10 @@ abstract class BaseApiController extends Controller
             ], $response->status());
         }
 
-        $responseData = $response->json() ?? [];
-        Log::info('API Response', ['data' => $responseData]); // Add this to debug
-
+        // For successful TIN validation
         return response()->json([
             ...$customResponse,
-            'data' => $responseData,
+            'message' => 'TIN validation successful',
             'status' => $response->status()
         ]);
     }
