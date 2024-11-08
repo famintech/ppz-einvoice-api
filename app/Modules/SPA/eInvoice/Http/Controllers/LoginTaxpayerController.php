@@ -5,6 +5,7 @@ namespace App\Modules\SPA\eInvoice\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\SPA\eInvoice\Config\lhdn as LHDN;
 use Illuminate\Support\Facades\Http;
+use GeniusTS\HijriDate\Date;
 
 class LoginTaxpayerController extends Controller
 {
@@ -28,12 +29,14 @@ class LoginTaxpayerController extends Controller
             'scope' => 'InvoicingAPI'
         ]);
 
-        $apiResponse = $response->json();
-
-        $finalResponse = array_merge($apiResponse, [
+        $customResponse = [
             'api' => 'PPZ Central API',
-            'timestamp' => now(),
-        ]);
+            'time' => now()->setTimezone('Asia/Kuala_Lumpur')->format('h:i'),
+            'date' => now()->setTimezone('Asia/Kuala_Lumpur')->format('d/m/Y'),
+            'hijri_date' => Date::now()->setTimezone('Asia/Kuala_Lumpur')->format('d F, Y'),
+        ];
+
+        $finalResponse = $customResponse + $response->json();
 
         return response()->json($finalResponse);
     }
