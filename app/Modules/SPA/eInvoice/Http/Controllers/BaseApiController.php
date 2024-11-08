@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\SPA\eInvoice\Config\lhdn as LHDN;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseApiController extends Controller
 {
@@ -28,7 +29,21 @@ abstract class BaseApiController extends Controller
             $request = $request->asForm();
         }
 
-        $response = $request->{strtolower($method)}($this->baseUrl . $endpoint, $params);
+        $url = $this->baseUrl . $endpoint;
+        Log::info('Making API request', [
+            'method' => $method,
+            'url' => $url,
+            'params' => $params
+        ]);
+
+        $response = $request->{strtolower($method)}($url, $params);
+
+        if (!$response->successful()) {
+            Log::error('API request failed', [
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+        }
 
         return $this->formatResponse($response);
     }
@@ -41,6 +56,15 @@ abstract class BaseApiController extends Controller
             'date' => now()->setTimezone('Asia/Kuala_Lumpur')->format('d/m/Y'),
         ];
 
-        return response()->json($customResponse + $response->json());
+        if (!$response->successful()) {
+            return response()->json([
+                ...$customResponse,
+                'error' => $response->body(),
+                'status' => $response->status()
+            ], $response->status());
+        }
+
+        $responseData = $response->json() ?? [];
+        return response()->json($customResponse + $responseData);
     }
 }
