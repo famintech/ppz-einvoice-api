@@ -129,19 +129,37 @@ class BuildXMLDocumentController extends Controller
 
         // Add TaxSubtotal elements
         if ($request->input('taxAmountPerType')) {
-            foreach ($request->input('taxAmountPerType') as $index => $taxAmount) {
-                $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal', null, self::XML_NAMESPACES['xmlns:cac']);
+            $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal', null, self::XML_NAMESPACES['xmlns:cac']);
 
-                // Add TaxableAmount if provided
-                if (isset($request->input('taxableAmountPerType')[$index])) {
-                    $taxableAmount = $taxSubtotal->addChild('cbc:TaxableAmount', $request->input('taxableAmountPerType')[$index], self::XML_NAMESPACES['xmlns:cbc']);
-                    $taxableAmount->addAttribute('currencyID', $request->input('currencyCode'));
-                }
+            // Add TaxableAmount
+            $taxableAmount = $taxSubtotal->addChild('cbc:TaxableAmount', $request->input('taxableAmountPerType'), self::XML_NAMESPACES['xmlns:cbc']);
+            $taxableAmount->addAttribute('currencyID', $request->input('currencyCode'));
 
-                // Add TaxAmount (mandatory)
-                $subTotalTaxAmount = $taxSubtotal->addChild('cbc:TaxAmount', $taxAmount, self::XML_NAMESPACES['xmlns:cbc']);
-                $subTotalTaxAmount->addAttribute('currencyID', $request->input('currencyCode'));
+            // Add TaxAmount
+            $subTotalTaxAmount = $taxSubtotal->addChild('cbc:TaxAmount', $request->input('taxAmountPerType'), self::XML_NAMESPACES['xmlns:cbc']);
+            $subTotalTaxAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            // Add Percent if provided
+            if ($request->input('taxPercent')) {
+                $taxSubtotal->addChild('cbc:Percent', $request->input('taxPercent'), self::XML_NAMESPACES['xmlns:cbc']);
             }
+
+            // Add TaxCategory
+            $taxCategory = $taxSubtotal->addChild('cac:TaxCategory', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add ID (tax type or exemption category)
+            if ($request->input('taxExemptionDetails')) {
+                $taxCategory->addChild('cbc:ID', 'E', self::XML_NAMESPACES['xmlns:cbc']);
+                $taxCategory->addChild('cbc:TaxExemptionReason', $request->input('taxExemptionDetails'), self::XML_NAMESPACES['xmlns:cbc']);
+            } else {
+                $taxCategory->addChild('cbc:ID', $request->input('taxType'), self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
+            // Add TaxScheme
+            $taxScheme = $taxCategory->addChild('cac:TaxScheme', null, self::XML_NAMESPACES['xmlns:cac']);
+            $taxSchemeId = $taxScheme->addChild('cbc:ID', 'OTH', self::XML_NAMESPACES['xmlns:cbc']);
+            $taxSchemeId->addAttribute('schemeID', 'UN/ECE 5153');
+            $taxSchemeId->addAttribute('schemeAgencyID', '6');
         }
 
         // Add PayableRoundingAmount if provided

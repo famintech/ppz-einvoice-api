@@ -172,19 +172,36 @@ class ProcessInvoiceController extends Controller
             ],
             'taxableAmountPerType' => [
                 'nullable',
-                'array'
-            ],
-            'taxableAmountPerType.*' => [
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/'
+                'string'
             ],
             'taxAmountPerType' => [
                 'required',
-                'array'
+                'string'
             ],
-            'taxAmountPerType.*' => [
+            'taxExemptionDetails' => [
+                'nullable',
+                'required_if:totalTaxAmount,0',
+                'string',
+                'max:300',
+                'regex:/^[.,\-()a-zA-Z0-9\s]*$/'  // Only allows period, dash, comma, parentheses, alphanumeric and spaces
+            ],
+            'taxExemptionCategory' => [
+                'nullable',
+                'required_with:taxExemptionDetails',
+                'string',
+                'in:E'  // For exempt category
+            ],
+            'taxExemptedAmount' => [
+                'nullable',
+                'required_if:totalTaxAmount,0',
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'taxType' => [
+                'required',
+                'string',
+                'size:2',
+                'regex:/^\d{2}$/'  
             ]
         ]);
 
