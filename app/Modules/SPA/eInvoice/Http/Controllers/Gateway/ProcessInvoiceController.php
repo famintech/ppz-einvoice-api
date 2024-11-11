@@ -201,7 +201,29 @@ class ProcessInvoiceController extends Controller
                 'required',
                 'string',
                 'size:2',
-                'regex:/^\d{2}$/'  
+                'regex:/^\d{2}$/'
+            ],
+            'additionalDiscountAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'additionalDiscountReason' => [
+                'nullable',
+                'required_with:additionalDiscountAmount',
+                'string',
+                'max:300'
+            ],
+            'additionalFeeAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'additionalFeeReason' => [
+                'nullable',
+                'required_with:additionalFeeAmount',
+                'string',
+                'max:300'
             ]
         ]);
 

@@ -55,6 +55,23 @@ class BuildXMLDocumentController extends Controller
         $typeCode->addAttribute('listVersionID', $request->input('eInvoiceVersion'));
 
         $xml->addChild('cbc:DocumentCurrencyCode', $request->input('currencyCode'), self::XML_NAMESPACES['xmlns:cbc']);
+        // Add AllowanceCharge for additional discount if provided
+        if ($request->input('additionalDiscountAmount')) {
+            $allowanceCharge = $xml->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+            $allowanceCharge->addChild('cbc:ChargeIndicator', 'false', self::XML_NAMESPACES['xmlns:cbc']);
+            $allowanceCharge->addChild('cbc:AllowanceChargeReason', $request->input('additionalDiscountReason'), self::XML_NAMESPACES['xmlns:cbc']);
+            $amount = $allowanceCharge->addChild('cbc:Amount', $request->input('additionalDiscountAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $amount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
+
+        // Add AllowanceCharge for additional fee if provided
+        if ($request->input('additionalFeeAmount')) {
+            $allowanceCharge = $xml->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+            $allowanceCharge->addChild('cbc:ChargeIndicator', 'true', self::XML_NAMESPACES['xmlns:cbc']);
+            $allowanceCharge->addChild('cbc:AllowanceChargeReason', $request->input('additionalFeeReason'), self::XML_NAMESPACES['xmlns:cbc']);
+            $amount = $allowanceCharge->addChild('cbc:Amount', $request->input('additionalFeeAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $amount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
 
         // Add Invoice Period if billing frequency is provided
         if ($request->input('billingFrequency')) {
@@ -177,6 +194,8 @@ class BuildXMLDocumentController extends Controller
             $lineExtensionAmount = $legalMonetaryTotal->addChild('cbc:LineExtensionAmount', $request->input('totalNetAmount'), self::XML_NAMESPACES['xmlns:cbc']);
             $lineExtensionAmount->addAttribute('currencyID', $request->input('currencyCode'));
         }
+
+
 
         // Format and return
         $dom = new \DOMDocument('1.0', 'UTF-8');
