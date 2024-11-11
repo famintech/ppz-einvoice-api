@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\SPA\eInvoice\Http\Controllers;
+namespace App\Modules\SPA\eInvoice\Http\Controllers\Utility;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
