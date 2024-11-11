@@ -12,6 +12,13 @@ class BuildJSONDocumentController extends Controller
         try {
             $document = $this->buildDocument($request);
 
+            if ($request->input('download')) {
+                return response($document, 200, [
+                    'Content-Type' => 'application/json',
+                    'Content-Disposition' => 'attachment; filename="invoice.json"',
+                ]);
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => 'JSON document built successfully',
