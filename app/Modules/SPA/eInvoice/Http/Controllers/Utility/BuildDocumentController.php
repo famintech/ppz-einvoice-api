@@ -50,9 +50,9 @@ class BuildDocumentController extends Controller
                 xmlns:cbc="' . self::XML_NAMESPACES['xmlns:cbc'] . '"/>');
 
         // Add core elements with correct namespace prefixes
-        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'));
+        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'), self::XML_NAMESPACES['xmlns:cbc']);
 
-        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'));
+        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'), self::XML_NAMESPACES['xmlns:cbc']);
         $typeCode->addAttribute('listVersionID', $request->input('eInvoiceVersion'));
 
         // Return formatted XML
