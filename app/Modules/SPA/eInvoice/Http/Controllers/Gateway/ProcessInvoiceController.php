@@ -104,7 +104,7 @@ class ProcessInvoiceController extends Controller
             'prePaymentAmount' => [
                 'nullable',
                 'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/'  
+                'regex:/^\d+(\.\d{1,2})?$/'
             ],
             'prePaymentDate' => [
                 'nullable',
@@ -146,6 +146,26 @@ class ProcessInvoiceController extends Controller
                 'gte:totalIncludingTax'
             ],
             'totalNetAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'totalDiscountValue' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'totalFeeChargeAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'totalTaxAmount' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'roundingAmount' => [
                 'nullable',
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/'

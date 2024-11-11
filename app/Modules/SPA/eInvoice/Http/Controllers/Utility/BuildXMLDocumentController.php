@@ -68,12 +68,6 @@ class BuildXMLDocumentController extends Controller
         if ($request->input('paymentMode')) {
             $paymentMeans = $xml->addChild('cac:PaymentMeans', null, self::XML_NAMESPACES['xmlns:cac']);
             $paymentMeans->addChild('cbc:PaymentMeansCode', $request->input('paymentMode'), self::XML_NAMESPACES['xmlns:cbc']);
-        }
-
-        // Add Payment Means if payment mode is provided
-        if ($request->input('paymentMode')) {
-            $paymentMeans = $xml->addChild('cac:PaymentMeans', null, self::XML_NAMESPACES['xmlns:cac']);
-            $paymentMeans->addChild('cbc:PaymentMeansCode', $request->input('paymentMode'), self::XML_NAMESPACES['xmlns:cbc']);
 
             // Add bank account if provided
             if ($request->input('supplierBankAccount')) {
@@ -91,13 +85,13 @@ class BuildXMLDocumentController extends Controller
         // Add Prepayment information if amount is provided
         if ($request->input('prePaymentAmount')) {
             $prepaidPayment = $xml->addChild('cac:PrepaidPayment', null, self::XML_NAMESPACES['xmlns:cac']);
+            $prepaidPayment->addChild('cbc:ID', $request->input('prePaymentReference'), self::XML_NAMESPACES['xmlns:cbc']);
 
             $paidAmount = $prepaidPayment->addChild('cbc:PaidAmount', $request->input('prePaymentAmount'), self::XML_NAMESPACES['xmlns:cbc']);
             $paidAmount->addAttribute('currencyID', $request->input('currencyCode'));
 
             $prepaidPayment->addChild('cbc:PaidDate', $request->input('prePaymentDate'), self::XML_NAMESPACES['xmlns:cbc']);
             $prepaidPayment->addChild('cbc:PaidTime', $request->input('prePaymentTime'), self::XML_NAMESPACES['xmlns:cbc']);
-            $prepaidPayment->addChild('cbc:ID', $request->input('prePaymentReference'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
         // Add Billing Reference if provided
@@ -115,6 +109,29 @@ class BuildXMLDocumentController extends Controller
 
         $taxInclusiveAmount = $legalMonetaryTotal->addChild('cbc:TaxInclusiveAmount', $request->input('totalIncludingTax'), self::XML_NAMESPACES['xmlns:cbc']);
         $taxInclusiveAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+        // Add AllowanceTotalAmount if discount value is provided
+        if ($request->input('totalDiscountValue')) {
+            $allowanceTotalAmount = $legalMonetaryTotal->addChild('cbc:AllowanceTotalAmount', $request->input('totalDiscountValue'), self::XML_NAMESPACES['xmlns:cbc']);
+            $allowanceTotalAmount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
+
+        // Add ChargeTotalAmount if fee/charge amount is provided
+        if ($request->input('totalFeeChargeAmount')) {
+            $chargeTotalAmount = $legalMonetaryTotal->addChild('cbc:ChargeTotalAmount', $request->input('totalFeeChargeAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $chargeTotalAmount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
+
+        // Add Tax Total (mandatory)
+        $taxTotal = $xml->addChild('cac:TaxTotal', null, self::XML_NAMESPACES['xmlns:cac']);
+        $taxAmount = $taxTotal->addChild('cbc:TaxAmount', $request->input('totalTaxAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+        $taxAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+        // Add PayableRoundingAmount if provided
+        if ($request->input('roundingAmount')) {
+            $roundingAmount = $legalMonetaryTotal->addChild('cbc:PayableRoundingAmount', $request->input('roundingAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $roundingAmount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
 
         // Add PayableAmount (mandatory)
         $payableAmount = $legalMonetaryTotal->addChild('cbc:PayableAmount', $request->input('totalPayableAmount'), self::XML_NAMESPACES['xmlns:cbc']);
