@@ -19,15 +19,15 @@ class Base64Controller extends Controller
                 function ($attribute, $value, $fail) {
                     $mimeType = $value->getMimeType();
                     $extension = strtolower($value->getClientOriginalExtension());
-                    
+
                     if ($extension === 'json' && !in_array($mimeType, ['application/json', 'text/plain'])) {
                         $fail('The file must be a valid JSON file.');
                     }
-                    
+
                     if ($extension === 'xml' && !in_array($mimeType, ['application/xml', 'text/xml'])) {
                         $fail('The file must be a valid XML file.');
                     }
-                    
+
                     // Validate JSON content
                     if ($extension === 'json') {
                         $content = file_get_contents($value->getRealPath());
@@ -57,7 +57,7 @@ class Base64Controller extends Controller
         $codeNumber = null;
         if ($request->input('format') === 'JSON') {
             $jsonData = json_decode($content, true);
-            $codeNumber = $jsonData['Invoice']['ID']['_'] ?? null;
+            $codeNumber = $jsonData['Invoice'][0]['ID'][0]['_'] ?? null;
         } else { // XML
             try {
                 $xml = new SimpleXMLElement($content);
@@ -109,7 +109,7 @@ class Base64Controller extends Controller
         }
 
         $decoded = base64_decode($request->input('base64'), true);
-        
+
         if ($decoded === false) {
             return response()->json([
                 'error' => 'Invalid base64 string',
