@@ -21,15 +21,21 @@ class Base64Controller extends Controller
                 function ($attribute, $value, $fail) {
                     $mimeType = $value->getMimeType();
                     $extension = strtolower($value->getClientOriginalExtension());
-
+                
                     if ($extension === 'json' && !in_array($mimeType, ['application/json', 'text/plain'])) {
                         $fail('The file must be a valid JSON file.');
                     }
-
-                    if ($extension === 'xml' && !in_array($mimeType, ['application/xml', 'text/xml'])) {
+                
+                    if ($extension === 'xml' && !in_array($mimeType, [
+                        'application/xml',
+                        'text/xml',
+                        'text/plain',
+                        'application/x-xml',
+                        'text/html' 
+                    ])) {
                         $fail('The file must be a valid XML file.');
                     }
-
+                
                     // Validate JSON content
                     if ($extension === 'json') {
                         $content = file_get_contents($value->getRealPath());
