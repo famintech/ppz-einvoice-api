@@ -15,13 +15,14 @@ class ProcessInvoiceController extends Controller
     {
         // Set KL timezone and get current time
         $now = Carbon::now('Asia/Kuala_Lumpur');
-        
+
         // Merge current date and time into request
         $request->merge([
             'eInvoiceDate' => $now->format('Y-m-d'),
             'eInvoiceTime' => $now->format('H:i:s') . 'Z',
             'eInvoiceVersion' => '1.0',
-            'currencyCode' => 'MYR'
+            'currencyCode' => 'MYR',
+            // 'taxCurrencyCode' => 'MYR'
         ]);
 
         $validator = Validator::make($request->all(), [
@@ -58,11 +59,35 @@ class ProcessInvoiceController extends Controller
                 'size:3',
                 'regex:/^[A-Z]{3}$/'
             ],
-            'taxCurrencyCode' => [
+            // 'taxCurrencyCode' => [
+            //     'nullable',
+            //     'string',
+            //     'size:3',
+            //     'regex:/^[A-Z]{3}$/'
+            // ]
+            // New billing period validations
+            'billingFrequency' => [
                 'nullable',
                 'string',
-                'size:3',
-                'regex:/^[A-Z]{3}$/'
+                'max:50',
+                'in:Daily,Weekly,Biweekly,Monthly,Bimonthly,Quarterly,Half-yearly,Yearly,Others,Not Applicable'
+            ],
+            'billingPeriodStartDate' => [
+                'nullable',
+                'required_with:billingFrequency',
+                'date_format:Y-m-d'
+            ],
+            'billingPeriodEndDate' => [
+                'nullable',
+                'required_with:billingFrequency',
+                'date_format:Y-m-d',
+                'after_or_equal:billingPeriodStartDate'
+            ],
+            'paymentMode' => [
+                'nullable',
+                'string',
+                'size:2',
+                'regex:/^\d{2}$/'
             ]
         ]);
 
@@ -74,10 +99,10 @@ class ProcessInvoiceController extends Controller
         }
 
         try {
-            $controller = $request->input('format') === 'XML' 
-                ? BuildXMLDocumentController::class 
+            $controller = $request->input('format') === 'XML'
+                ? BuildXMLDocumentController::class
                 : BuildJSONDocumentController::class;
-    
+
             return app($controller)->__invoke($request);
         } catch (\Exception $e) {
             return response()->json([

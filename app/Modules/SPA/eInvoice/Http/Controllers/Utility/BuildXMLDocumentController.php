@@ -42,9 +42,9 @@ class BuildXMLDocumentController extends Controller
     private function buildDocument(Request $request): string
     {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-            <Invoice xmlns="' . self::XML_NAMESPACES['xmlns'] . '"
-                    xmlns:cac="' . self::XML_NAMESPACES['xmlns:cac'] . '"
-                    xmlns:cbc="' . self::XML_NAMESPACES['xmlns:cbc'] . '"/>');
+        <Invoice xmlns="' . self::XML_NAMESPACES['xmlns'] . '"
+                xmlns:cac="' . self::XML_NAMESPACES['xmlns:cac'] . '"
+                xmlns:cbc="' . self::XML_NAMESPACES['xmlns:cbc'] . '"/>');
 
         // Core elements
         $xml->addChild('cbc:ID', $request->input('eInvoiceCode'), self::XML_NAMESPACES['xmlns:cbc']);
@@ -56,13 +56,19 @@ class BuildXMLDocumentController extends Controller
 
         $xml->addChild('cbc:DocumentCurrencyCode', $request->input('currencyCode'), self::XML_NAMESPACES['xmlns:cbc']);
 
-        if ($request->input('taxCurrencyCode')) {
-            $xml->addChild('cbc:TaxCurrencyCode', $request->input('taxCurrencyCode'), self::XML_NAMESPACES['xmlns:cbc']);
+        // Add Invoice Period if billing frequency is provided
+        if ($request->input('billingFrequency')) {
+            $invoicePeriod = $xml->addChild('cac:InvoicePeriod', null, self::XML_NAMESPACES['xmlns:cac']);
+            $invoicePeriod->addChild('cbc:StartDate', $request->input('billingPeriodStartDate'), self::XML_NAMESPACES['xmlns:cbc']);
+            $invoicePeriod->addChild('cbc:EndDate', $request->input('billingPeriodEndDate'), self::XML_NAMESPACES['xmlns:cbc']);
+            $invoicePeriod->addChild('cbc:Description', $request->input('billingFrequency'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
-        // Digital Signature
-        // $signature = $xml->addChild('cac:Signature', null, self::XML_NAMESPACES['xmlns:cac']);
-        // $signature->addChild('cbc:ID', $request->input('issuerSignature'), self::XML_NAMESPACES['xmlns:cbc']);
+        // Add Payment Means if payment mode is provided
+        if ($request->input('paymentMode')) {
+            $paymentMeans = $xml->addChild('cac:PaymentMeans', null, self::XML_NAMESPACES['xmlns:cac']);
+            $paymentMeans->addChild('cbc:PaymentMeansCode', $request->input('paymentMode'), self::XML_NAMESPACES['xmlns:cbc']);
+        }
 
         // Format and return
         $dom = new \DOMDocument('1.0', 'UTF-8');

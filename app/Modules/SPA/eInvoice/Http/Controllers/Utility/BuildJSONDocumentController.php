@@ -66,12 +66,12 @@ class BuildJSONDocumentController extends Controller
                         '_' => $request->input('currencyCode')
                     ]
                 ],
-                'TaxCurrencyCode' => $request->input('taxCurrencyCode') ? 
-                    [
-                        [
-                            '_' => $request->input('taxCurrencyCode')
-                        ]
-                    ] : null
+                // 'TaxCurrencyCode' => $request->input('taxCurrencyCode') ? 
+                //     [
+                //         [
+                //             '_' => $request->input('taxCurrencyCode')
+                //         ]
+                //     ] : null
             ]
         ]
     ];
