@@ -9,6 +9,8 @@ use SimpleXMLElement;
 
 class Base64Controller extends Controller
 {
+    private $parsedData;
+
     public function encode(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -54,7 +56,14 @@ class Base64Controller extends Controller
         // Minify based on format
         if ($request->input('format') === 'JSON') {
             $jsonData = json_decode($content, true);
-            $content = json_encode($jsonData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            if ($jsonData === null) {
+                return response()->json([
+                    'error' => 'Invalid JSON content',
+                    'status' => 400
+                ], 400);
+            }
+            $content = json_encode($jsonData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+            $this->parsedData = $jsonData;
         } else { // XML
             try {
                 $xml = new SimpleXMLElement($content);
@@ -78,7 +87,7 @@ class Base64Controller extends Controller
         // Extract codeNumber based on format
         $codeNumber = null;
         if ($request->input('format') === 'JSON') {
-            $jsonData = json_decode($content, true);
+            $jsonData = $this->parsedData ?? json_decode($content, true);
             $codeNumber = $jsonData['Invoice'][0]['ID'][0]['_'] ?? null;
         } else { // XML
             try {
