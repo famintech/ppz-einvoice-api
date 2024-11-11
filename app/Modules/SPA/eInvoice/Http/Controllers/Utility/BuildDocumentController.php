@@ -43,17 +43,16 @@ class BuildDocumentController extends Controller
 
     private function buildXMLDocument(Request $request): string
     {
-        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Invoice/>');
-
-        // Add namespaces correctly
-        $xml->addAttribute('xmlns', self::XML_NAMESPACES['xmlns']);
-        $xml->addAttribute('xmlns:cac', self::XML_NAMESPACES['xmlns:cac']);
-        $xml->addAttribute('xmlns:cbc', self::XML_NAMESPACES['xmlns:cbc']);
+        // Create XML with root namespace
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
+        <Invoice xmlns="' . self::XML_NAMESPACES['xmlns'] . '"
+                xmlns:cac="' . self::XML_NAMESPACES['xmlns:cac'] . '"
+                xmlns:cbc="' . self::XML_NAMESPACES['xmlns:cbc'] . '"/>');
 
         // Add core elements with correct namespace prefixes
-        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'), self::XML_NAMESPACES['xmlns:cbc']);
+        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'));
 
-        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'), self::XML_NAMESPACES['xmlns:cbc']);
+        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'));
         $typeCode->addAttribute('listVersionID', $request->input('eInvoiceVersion'));
 
         // Return formatted XML
