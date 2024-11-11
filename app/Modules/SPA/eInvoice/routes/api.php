@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Modules\SPA\eInvoice\Http\Controllers\Platform\LoginTaxpayerController;
-use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetAllDocumentTypesController;
-use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetDocumentTypeController;
-use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetDocumentTypeVersionController;
-use App\Modules\SPA\eInvoice\Http\Controllers\Platform\GetNotificationsController;
-use App\Modules\SPA\eInvoice\Http\Controllers\eInvoicing\ValidateTINTaxpayerController;
-use App\Modules\SPA\eInvoice\Http\Controllers\eInvoicing\SubmitDocumentsController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_Platform\LoginTaxpayerController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_Platform\GetAllDocumentTypesController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_Platform\GetDocumentTypeController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_Platform\GetDocumentTypeVersionController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_Platform\GetNotificationsController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_eInvoicing\ValidateTINTaxpayerController;
+use App\Modules\SPA\eInvoice\Http\Controllers\LHDN_eInvoicing\SubmitDocumentsController;
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\Base64Controller;
 use App\Modules\SPA\eInvoice\Http\Controllers\Gateway\ProcessInvoiceController;
 

@@ -13,8 +13,8 @@ class ProcessInvoiceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'format' => 'required|in:XML,JSON',
-            'supplier' => 'required|array',
-            'buyer' => 'required|array',
+            // 'supplier' => 'required|array',
+            // 'buyer' => 'required|array',
             'eInvoiceVersion' => [
                 'required',
                 'string',

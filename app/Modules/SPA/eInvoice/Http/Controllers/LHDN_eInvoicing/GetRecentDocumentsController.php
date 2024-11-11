@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\SPA\eInvoice\Http\Controllers\eInvoicing;
+namespace App\Modules\SPA\eInvoice\Http\Controllers\LHDN_eInvoicing;
 
 use App\Modules\SPA\eInvoice\Http\Controllers\BaseApiController;
 
