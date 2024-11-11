@@ -17,9 +17,16 @@ class BuildDocumentController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $document = $request->input('format') === 'XML' 
+            $document = $request->input('format') === 'XML'
                 ? $this->buildXMLDocument($request)
                 : $this->buildJSONDocument($request);
+
+            if ($request->input('download') && $request->input('format') === 'XML') {
+                return response($document, 200, [
+                    'Content-Type' => 'application/xml',
+                    'Content-Disposition' => 'attachment; filename="invoice.xml"',
+                ]);
+            }
 
             return response()->json([
                 'status' => 200,
@@ -37,7 +44,7 @@ class BuildDocumentController extends Controller
     private function buildXMLDocument(Request $request): string
     {
         $xml = new SimpleXMLElement('<Invoice/>');
-        
+
         // Add namespaces
         foreach (self::XML_NAMESPACES as $key => $value) {
             $xml->addAttribute($key, $value);
@@ -45,7 +52,7 @@ class BuildDocumentController extends Controller
 
         // Add core elements
         $xml->addChild('cbc:ID', $request->input('eInvoiceCode'));
-        
+
         $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'));
         $typeCode->addAttribute('listVersionID', $request->input('eInvoiceVersion'));
 
@@ -54,7 +61,7 @@ class BuildDocumentController extends Controller
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($xml->asXML());
-        
+
         return $dom->saveXML();
     }
 
