@@ -13,7 +13,25 @@ class ProcessInvoiceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'format' => 'required|in:XML,JSON',
-            // We'll add more validation rules based on LHDN requirements
+            'supplier' => 'required|array',
+            'buyer' => 'required|array',
+            'eInvoiceVersion' => [
+                'required',
+                'string',
+                'size:3',  // To match "1.0" format
+                'regex:/^\d\.\d$/'  // Ensures format like "1.0", "2.0"
+            ],
+            'eInvoiceTypeCode' => [
+                'required',
+                'string',
+                'size:2',  // For "01" format
+                'regex:/^\d{2}$/'  // Must be 2 digits
+            ],
+            'eInvoiceCode' => [
+                'required',
+                'string',
+                'max:50'  // As per NUMBER OF CHARS column
+            ]
         ]);
 
         if ($validator->fails()) {
