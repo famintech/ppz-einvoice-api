@@ -1,3 +1,0 @@
-<?xml version= \"1.0\"?>\n
-<Invoice xmlns= \"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" cac= \"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" cbc= \"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">\n <ID>INV12345</ID>\n <InvoiceTypeCode listVersionID= \"1.0\">01</InvoiceTypeCode>
-    \n</Invoice>\n

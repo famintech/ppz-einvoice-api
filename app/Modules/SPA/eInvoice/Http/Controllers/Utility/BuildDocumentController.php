@@ -43,21 +43,21 @@ class BuildDocumentController extends Controller
 
     private function buildXMLDocument(Request $request): string
     {
-        $xml = new SimpleXMLElement('<Invoice/>');
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Invoice/>');
 
-        // Add namespaces
-        foreach (self::XML_NAMESPACES as $key => $value) {
-            $xml->addAttribute($key, $value);
-        }
+        // Add namespaces correctly
+        $xml->addAttribute('xmlns', self::XML_NAMESPACES['xmlns']);
+        $xml->addAttribute('xmlns:cac', self::XML_NAMESPACES['xmlns:cac']);
+        $xml->addAttribute('xmlns:cbc', self::XML_NAMESPACES['xmlns:cbc']);
 
-        // Add core elements
-        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'));
+        // Add core elements with correct namespace prefixes
+        $xml->addChild('cbc:ID', $request->input('eInvoiceCode'), self::XML_NAMESPACES['xmlns:cbc']);
 
-        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'));
+        $typeCode = $xml->addChild('cbc:InvoiceTypeCode', $request->input('eInvoiceTypeCode'), self::XML_NAMESPACES['xmlns:cbc']);
         $typeCode->addAttribute('listVersionID', $request->input('eInvoiceVersion'));
 
         // Return formatted XML
-        $dom = new \DOMDocument('1.0');
+        $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($xml->asXML());
