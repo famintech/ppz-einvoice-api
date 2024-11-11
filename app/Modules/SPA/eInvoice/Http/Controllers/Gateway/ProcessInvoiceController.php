@@ -7,11 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildXMLDocumentController;
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildJSONDocumentController;
+use Carbon\Carbon;
 
 class ProcessInvoiceController extends Controller
 {
     public function __invoke(Request $request)
     {
+        // Set KL timezone and get current time
+        $now = Carbon::now('Asia/Kuala_Lumpur');
+        
+        // Merge current date and time into request
+        $request->merge([
+            'eInvoiceDate' => $now->format('Y-m-d'),
+            'eInvoiceTime' => $now->format('H:i:s') . 'Z',
+            'eInvoiceVersion' => '1.0',
+            'currencyCode' => 'MYR'
+        ]);
+
         $validator = Validator::make($request->all(), [
             'format' => 'required|in:XML,JSON',
             'eInvoiceVersion' => [
@@ -37,18 +49,14 @@ class ProcessInvoiceController extends Controller
             ],
             'eInvoiceTime' => [
                 'required',
-                'regex:/^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$/',  // Format HH:MM:SSZ
+                'regex:/^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$/',
                 'size:9'
             ],
-            // 'issuerSignature' => [
-            //     'required',
-            //     'string'
-            // ],
             'currencyCode' => [
                 'required',
                 'string',
                 'size:3',
-                'regex:/^[A-Z]{3}$/'  // Three uppercase letters
+                'regex:/^[A-Z]{3}$/'
             ],
             'taxCurrencyCode' => [
                 'nullable',
