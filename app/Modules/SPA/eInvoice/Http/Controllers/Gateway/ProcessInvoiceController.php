@@ -169,6 +169,22 @@ class ProcessInvoiceController extends Controller
                 'nullable',
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'taxableAmountPerType' => [
+                'nullable',
+                'array'
+            ],
+            'taxableAmountPerType.*' => [
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'taxAmountPerType' => [
+                'required',
+                'array'
+            ],
+            'taxAmountPerType.*' => [
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
             ]
         ]);
 

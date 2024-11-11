@@ -127,6 +127,23 @@ class BuildXMLDocumentController extends Controller
         $taxAmount = $taxTotal->addChild('cbc:TaxAmount', $request->input('totalTaxAmount'), self::XML_NAMESPACES['xmlns:cbc']);
         $taxAmount->addAttribute('currencyID', $request->input('currencyCode'));
 
+        // Add TaxSubtotal elements
+        if ($request->input('taxAmountPerType')) {
+            foreach ($request->input('taxAmountPerType') as $index => $taxAmount) {
+                $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal', null, self::XML_NAMESPACES['xmlns:cac']);
+
+                // Add TaxableAmount if provided
+                if (isset($request->input('taxableAmountPerType')[$index])) {
+                    $taxableAmount = $taxSubtotal->addChild('cbc:TaxableAmount', $request->input('taxableAmountPerType')[$index], self::XML_NAMESPACES['xmlns:cbc']);
+                    $taxableAmount->addAttribute('currencyID', $request->input('currencyCode'));
+                }
+
+                // Add TaxAmount (mandatory)
+                $subTotalTaxAmount = $taxSubtotal->addChild('cbc:TaxAmount', $taxAmount, self::XML_NAMESPACES['xmlns:cbc']);
+                $subTotalTaxAmount->addAttribute('currencyID', $request->input('currencyCode'));
+            }
+        }
+
         // Add PayableRoundingAmount if provided
         if ($request->input('roundingAmount')) {
             $roundingAmount = $legalMonetaryTotal->addChild('cbc:PayableRoundingAmount', $request->input('roundingAmount'), self::XML_NAMESPACES['xmlns:cbc']);
