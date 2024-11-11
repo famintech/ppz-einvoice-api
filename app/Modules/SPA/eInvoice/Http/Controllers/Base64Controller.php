@@ -12,7 +12,32 @@ class Base64Controller extends Controller
     public function encode(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:json,xml|max:300', 
+            'file' => [
+                'required',
+                'file',
+                'max:300',
+                function ($attribute, $value, $fail) {
+                    $mimeType = $value->getMimeType();
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    
+                    if ($extension === 'json' && !in_array($mimeType, ['application/json', 'text/plain'])) {
+                        $fail('The file must be a valid JSON file.');
+                    }
+                    
+                    if ($extension === 'xml' && !in_array($mimeType, ['application/xml', 'text/xml'])) {
+                        $fail('The file must be a valid XML file.');
+                    }
+                    
+                    // Validate JSON content
+                    if ($extension === 'json') {
+                        $content = file_get_contents($value->getRealPath());
+                        json_decode($content);
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            $fail('The file must contain valid JSON content.');
+                        }
+                    }
+                },
+            ],
             'format' => 'required|in:XML,JSON'
         ]);
 
