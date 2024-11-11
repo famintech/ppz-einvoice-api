@@ -50,6 +50,28 @@ class Base64Controller extends Controller
 
         $file = $request->file('file');
         $content = file_get_contents($file->getRealPath());
+
+        // Minify based on format
+        if ($request->input('format') === 'JSON') {
+            $jsonData = json_decode($content, true);
+            $content = json_encode($jsonData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } else { // XML
+            try {
+                $xml = new SimpleXMLElement($content);
+                // Remove whitespace and format XML
+                $dom = new \DOMDocument('1.0');
+                $dom->loadXML($xml->asXML());
+                $dom->preserveWhiteSpace = false;
+                $dom->formatOutput = false;
+                $content = $dom->saveXML($dom->documentElement, LIBXML_NOEMPTYTAG);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'Invalid XML format',
+                    'status' => 400
+                ], 400);
+            }
+        }
+
         $encoded = base64_encode($content);
         $hash = hash('sha256', $content);
 
@@ -85,7 +107,7 @@ class Base64Controller extends Controller
                 'format' => $request->input('format'),
                 'document' => $encoded,
                 'documentHash' => $hash,
-                'codeNumber' => $file->getClientOriginalName()
+                'codeNumber' => $codeNumber
             ],
             'metadata' => [
                 'originalSize' => strlen($content),
