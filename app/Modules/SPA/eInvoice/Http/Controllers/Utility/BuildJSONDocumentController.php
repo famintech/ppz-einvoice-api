@@ -33,25 +33,47 @@ class BuildJSONDocumentController extends Controller
     }
 
     private function buildDocument(Request $request): array
-    {
-        return [
-            'Invoice' => [
-                [
-                    'ID' => [['_' => $request->input('eInvoiceCode')]],
-                    'IssueDate' => [['_' => $request->input('eInvoiceDate')]],
-                    'IssueTime' => [['_' => $request->input('eInvoiceTime')]],
-                    'InvoiceTypeCode' => [[
+{
+    return [
+        '_D' => "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+        '_A' => "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+        '_B' => "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+        'Invoice' => [
+            [
+                'ID' => [
+                    [
+                        '_' => $request->input('eInvoiceCode')
+                    ]
+                ],
+                'IssueDate' => [
+                    [
+                        '_' => $request->input('eInvoiceDate')
+                    ]
+                ],
+                'IssueTime' => [
+                    [
+                        '_' => $request->input('eInvoiceTime')
+                    ]
+                ],
+                'InvoiceTypeCode' => [
+                    [
                         '_' => $request->input('eInvoiceTypeCode'),
-                        '@listVersionID' => $request->input('eInvoiceVersion')
-                    ]],
-                    'DocumentCurrencyCode' => [['_' => $request->input('currencyCode')]],
-                    'TaxCurrencyCode' => $request->input('taxCurrencyCode') ? 
-                        [['_' => $request->input('taxCurrencyCode')]] : null,
-                    'Signature' => [[
-                        'ID' => [['_' => $request->input('issuerSignature')]]
-                    ]]
-                ]
+                        'listVersionID' => $request->input('eInvoiceVersion') 
+                    ]
+                ],
+                'DocumentCurrencyCode' => [
+                    [
+                        '_' => $request->input('currencyCode')
+                    ]
+                ],
+                'TaxCurrencyCode' => $request->input('taxCurrencyCode') ? 
+                    [
+                        [
+                            '_' => $request->input('taxCurrencyCode')
+                        ]
+                    ] : null
             ]
-        ];
-    }
+        ]
+    ];
+}
 }
