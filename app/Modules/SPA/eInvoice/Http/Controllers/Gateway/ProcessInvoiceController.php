@@ -88,6 +88,67 @@ class ProcessInvoiceController extends Controller
                 'string',
                 'size:2',
                 'regex:/^\d{2}$/'
+            ],
+            'supplierBankAccount' => [
+                'nullable',
+                'required_with:paymentMode',
+                'string',
+                'max:150',
+                'regex:/^\d+$/'  // Only numbers allowed
+            ],
+            'paymentTerms' => [
+                'nullable',
+                'string',
+                'max:300'
+            ],
+            'prePaymentAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'  
+            ],
+            'prePaymentDate' => [
+                'nullable',
+                'required_with:prePaymentAmount',
+                'date_format:Y-m-d'
+            ],
+            'prePaymentTime' => [
+                'nullable',
+                'required_with:prePaymentAmount',
+                'regex:/^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$/',
+                'size:9'
+            ],
+            'prePaymentReference' => [
+                'nullable',
+                'required_with:prePaymentAmount',
+                'string',
+                'max:150'
+            ],
+            'billReferenceNumber' => [
+                'nullable',
+                'string',
+                'max:150'
+            ],
+            'totalExcludingTax' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'totalIncludingTax' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',
+                'gte:totalExcludingTax'
+            ],
+            'totalPayableAmount' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',
+                'gte:totalIncludingTax'
+            ],
+            'totalNetAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
             ]
         ]);
 

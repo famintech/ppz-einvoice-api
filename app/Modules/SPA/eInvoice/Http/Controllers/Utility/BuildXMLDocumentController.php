@@ -70,6 +70,62 @@ class BuildXMLDocumentController extends Controller
             $paymentMeans->addChild('cbc:PaymentMeansCode', $request->input('paymentMode'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
+        // Add Payment Means if payment mode is provided
+        if ($request->input('paymentMode')) {
+            $paymentMeans = $xml->addChild('cac:PaymentMeans', null, self::XML_NAMESPACES['xmlns:cac']);
+            $paymentMeans->addChild('cbc:PaymentMeansCode', $request->input('paymentMode'), self::XML_NAMESPACES['xmlns:cbc']);
+
+            // Add bank account if provided
+            if ($request->input('supplierBankAccount')) {
+                $payeeFinancialAccount = $paymentMeans->addChild('cac:PayeeFinancialAccount', null, self::XML_NAMESPACES['xmlns:cac']);
+                $payeeFinancialAccount->addChild('cbc:ID', $request->input('supplierBankAccount'), self::XML_NAMESPACES['xmlns:cbc']);
+            }
+        }
+
+        // Add Payment Terms if provided
+        if ($request->input('paymentTerms')) {
+            $paymentTerms = $xml->addChild('cac:PaymentTerms', null, self::XML_NAMESPACES['xmlns:cac']);
+            $paymentTerms->addChild('cbc:Note', $request->input('paymentTerms'), self::XML_NAMESPACES['xmlns:cbc']);
+        }
+
+        // Add Prepayment information if amount is provided
+        if ($request->input('prePaymentAmount')) {
+            $prepaidPayment = $xml->addChild('cac:PrepaidPayment', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            $paidAmount = $prepaidPayment->addChild('cbc:PaidAmount', $request->input('prePaymentAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $paidAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            $prepaidPayment->addChild('cbc:PaidDate', $request->input('prePaymentDate'), self::XML_NAMESPACES['xmlns:cbc']);
+            $prepaidPayment->addChild('cbc:PaidTime', $request->input('prePaymentTime'), self::XML_NAMESPACES['xmlns:cbc']);
+            $prepaidPayment->addChild('cbc:ID', $request->input('prePaymentReference'), self::XML_NAMESPACES['xmlns:cbc']);
+        }
+
+        // Add Billing Reference if provided
+        if ($request->input('billReferenceNumber')) {
+            $billingReference = $xml->addChild('cac:BillingReference', null, self::XML_NAMESPACES['xmlns:cac']);
+            $additionalDocumentReference = $billingReference->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
+            $additionalDocumentReference->addChild('cbc:ID', $request->input('billReferenceNumber'), self::XML_NAMESPACES['xmlns:cbc']);
+        }
+
+        // Add Legal Monetary Totals (mandatory)
+        $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal', null, self::XML_NAMESPACES['xmlns:cac']);
+
+        $taxExclusiveAmount = $legalMonetaryTotal->addChild('cbc:TaxExclusiveAmount', $request->input('totalExcludingTax'), self::XML_NAMESPACES['xmlns:cbc']);
+        $taxExclusiveAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+        $taxInclusiveAmount = $legalMonetaryTotal->addChild('cbc:TaxInclusiveAmount', $request->input('totalIncludingTax'), self::XML_NAMESPACES['xmlns:cbc']);
+        $taxInclusiveAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+        // Add PayableAmount (mandatory)
+        $payableAmount = $legalMonetaryTotal->addChild('cbc:PayableAmount', $request->input('totalPayableAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+        $payableAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+        // Add LineExtensionAmount if totalNetAmount is provided
+        if ($request->input('totalNetAmount')) {
+            $lineExtensionAmount = $legalMonetaryTotal->addChild('cbc:LineExtensionAmount', $request->input('totalNetAmount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $lineExtensionAmount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
+
         // Format and return
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
