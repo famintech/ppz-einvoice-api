@@ -61,8 +61,8 @@ class BuildXMLDocumentController extends Controller
         }
 
         // Digital Signature
-        $signature = $xml->addChild('cac:Signature', null, self::XML_NAMESPACES['xmlns:cac']);
-        $signature->addChild('cbc:ID', $request->input('issuerSignature'), self::XML_NAMESPACES['xmlns:cbc']);
+        // $signature = $xml->addChild('cac:Signature', null, self::XML_NAMESPACES['xmlns:cac']);
+        // $signature->addChild('cbc:ID', $request->input('issuerSignature'), self::XML_NAMESPACES['xmlns:cbc']);
 
         // Format and return
         $dom = new \DOMDocument('1.0', 'UTF-8');

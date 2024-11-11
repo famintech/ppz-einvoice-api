@@ -40,10 +40,10 @@ class ProcessInvoiceController extends Controller
                 'regex:/^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$/',  // Format HH:MM:SSZ
                 'size:9'
             ],
-            'issuerSignature' => [
-                'required',
-                'string'
-            ],
+            // 'issuerSignature' => [
+            //     'required',
+            //     'string'
+            // ],
             'currencyCode' => [
                 'required',
                 'string',
