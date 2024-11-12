@@ -125,6 +125,20 @@ class BuildXMLDocumentController extends Controller
             // Add DeliveryParty
             $deliveryParty = $delivery->addChild('cac:DeliveryParty', null, self::XML_NAMESPACES['xmlns:cac']);
 
+            // Add PartyIdentification for TIN if provided
+            if ($request->input('shippingRecipientTIN')) {
+                $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
+                $id = $partyIdentification->addChild('cbc:ID', $request->input('shippingRecipientTIN'), self::XML_NAMESPACES['xmlns:cbc']);
+                $id->addAttribute('schemeID', 'TIN');
+            }
+
+            // Add PartyIdentification for BRN if provided
+            if ($request->input('shippingRecipientBRN')) {
+                $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
+                $id = $partyIdentification->addChild('cbc:ID', $request->input('shippingRecipientBRN'), self::XML_NAMESPACES['xmlns:cbc']);
+                $id->addAttribute('schemeID', 'BRN');
+            }
+
             // Add PartyLegalEntity for recipient name
             $partyLegalEntity = $deliveryParty->addChild('cac:PartyLegalEntity', null, self::XML_NAMESPACES['xmlns:cac']);
             $partyLegalEntity->addChild('cbc:RegistrationName', $request->input('shippingRecipientName'), self::XML_NAMESPACES['xmlns:cbc']);
@@ -132,16 +146,38 @@ class BuildXMLDocumentController extends Controller
             // Add PostalAddress if provided
             if ($request->input('shippingRecipientAddress')) {
                 $postalAddress = $deliveryParty->addChild('cac:PostalAddress', null, self::XML_NAMESPACES['xmlns:cac']);
-                $postalAddress->addChild('cbc:StreetName', $request->input('shippingRecipientAddress.streetName'), self::XML_NAMESPACES['xmlns:cbc']);
-                $postalAddress->addChild('cbc:CityName', $request->input('shippingRecipientAddress.cityName'), self::XML_NAMESPACES['xmlns:cbc']);
-                $postalAddress->addChild('cbc:PostalZone', $request->input('shippingRecipientAddress.postalZone'), self::XML_NAMESPACES['xmlns:cbc']);
-            }
 
-            // Add PartyIdentification for TIN if provided
-            if ($request->input('shippingRecipientTIN')) {
-                $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
-                $id = $partyIdentification->addChild('cbc:ID', $request->input('shippingRecipientTIN'), self::XML_NAMESPACES['xmlns:cbc']);
-                $id->addAttribute('schemeID', 'TIN');
+                // Add mandatory Line element (line0)
+                $addressLine = $postalAddress->addChild('cac:AddressLine', null, self::XML_NAMESPACES['xmlns:cac']);
+                $addressLine->addChild('cbc:Line', $request->input('shippingRecipientAddress.line0'), self::XML_NAMESPACES['xmlns:cbc']);
+
+                // Add optional address lines if provided
+                if ($request->input('shippingRecipientAddress.line1')) {
+                    $addressLine = $postalAddress->addChild('cac:AddressLine', null, self::XML_NAMESPACES['xmlns:cac']);
+                    $addressLine->addChild('cbc:Line', $request->input('shippingRecipientAddress.line1'), self::XML_NAMESPACES['xmlns:cbc']);
+                }
+
+                if ($request->input('shippingRecipientAddress.line2')) {
+                    $addressLine = $postalAddress->addChild('cac:AddressLine', null, self::XML_NAMESPACES['xmlns:cac']);
+                    $addressLine->addChild('cbc:Line', $request->input('shippingRecipientAddress.line2'), self::XML_NAMESPACES['xmlns:cbc']);
+                }
+
+                // Add mandatory CityName
+                $postalAddress->addChild('cbc:CityName', $request->input('shippingRecipientAddress.cityName'), self::XML_NAMESPACES['xmlns:cbc']);
+
+                // Add optional PostalZone
+                if ($request->input('shippingRecipientAddress.postalZone')) {
+                    $postalAddress->addChild('cbc:PostalZone', $request->input('shippingRecipientAddress.postalZone'), self::XML_NAMESPACES['xmlns:cbc']);
+                }
+
+                // Add mandatory CountrySubentityCode (state)
+                $postalAddress->addChild('cbc:CountrySubentityCode', $request->input('shippingRecipientAddress.state'), self::XML_NAMESPACES['xmlns:cbc']);
+
+                // Add mandatory Country
+                $country = $postalAddress->addChild('cac:Country', null, self::XML_NAMESPACES['xmlns:cac']);
+                $identificationCode = $country->addChild('cbc:IdentificationCode', $request->input('shippingRecipientAddress.country'), self::XML_NAMESPACES['xmlns:cbc']);
+                $identificationCode->addAttribute('listID', 'ISO3166-1');
+                $identificationCode->addAttribute('listAgencyID', '6');
             }
         }
 
