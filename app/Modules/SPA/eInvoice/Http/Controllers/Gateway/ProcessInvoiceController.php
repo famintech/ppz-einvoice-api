@@ -339,6 +339,35 @@ class ProcessInvoiceController extends Controller
                 'string',
                 'max:300',
                 'regex:/^[A-Za-z0-9\-]+$/' // Only alphanumeric and dashes
+            ],
+            'customsFormK2Reference' => [
+                'nullable',
+                'string',
+                'max:1000',
+                'regex:/^[A-Z0-9,]*$/'  // Only uppercase alphanumeric and commas
+            ],
+            'shippingDetails' => [
+                'nullable',
+                'array'
+            ],
+            'shippingDetails.referenceNumber' => [
+                'required_with:shippingDetails',
+                'string',
+                'max:300'
+            ],
+            'shippingDetails.chargeIndicator' => [
+                'required_with:shippingDetails',
+                'boolean'
+            ],
+            'shippingDetails.amount' => [
+                'required_with:shippingDetails',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
+            'shippingDetails.description' => [
+                'nullable',
+                'string',
+                'max:300'
             ]
         ]);
 

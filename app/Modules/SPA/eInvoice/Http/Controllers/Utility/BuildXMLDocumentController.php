@@ -128,6 +128,36 @@ class BuildXMLDocumentController extends Controller
             }
         }
 
+        // Add K2 Customs Form reference if provided
+        if ($request->input('customsFormK2Reference')) {
+            $references = explode(',', $request->input('customsFormK2Reference'));
+            foreach ($references as $reference) {
+                $additionalDocumentReference = $xml->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
+                $additionalDocumentReference->addChild('cbc:ID', $reference, self::XML_NAMESPACES['xmlns:cbc']);
+                $additionalDocumentReference->addChild('cbc:DocumentType', 'K2', self::XML_NAMESPACES['xmlns:cbc']);
+            }
+        }
+
+        // Add Shipping Details if provided
+        if ($request->input('shippingDetails')) {
+            $delivery = $xml->addChild('cac:Delivery', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add Shipment section
+            $shipment = $delivery->addChild('cac:Shipment', null, self::XML_NAMESPACES['xmlns:cac']);
+            $shipment->addChild('cbc:ID', $request->input('shippingDetails.referenceNumber'), self::XML_NAMESPACES['xmlns:cbc']);
+
+            // Add FreightAllowanceCharge
+            $freightAllowanceCharge = $shipment->addChild('cac:FreightAllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+            $freightAllowanceCharge->addChild('cbc:ChargeIndicator', $request->input('shippingDetails.chargeIndicator') ? 'true' : 'false', self::XML_NAMESPACES['xmlns:cbc']);
+
+            $amount = $freightAllowanceCharge->addChild('cbc:Amount', $request->input('shippingDetails.amount'), self::XML_NAMESPACES['xmlns:cbc']);
+            $amount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            if ($request->input('shippingDetails.description')) {
+                $freightAllowanceCharge->addChild('cbc:AllowanceChargeReason', $request->input('shippingDetails.description'), self::XML_NAMESPACES['xmlns:cbc']);
+            }
+        }
+
         // Add Incoterms if provided
         if ($request->input('incoterms')) {
             $additionalDocumentReference = $xml->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
