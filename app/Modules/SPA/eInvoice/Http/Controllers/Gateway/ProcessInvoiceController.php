@@ -224,6 +224,37 @@ class ProcessInvoiceController extends Controller
                 'required_with:additionalFeeAmount',
                 'string',
                 'max:300'
+            ],
+            'shippingRecipientName' => [
+                'nullable',
+                'string',
+                'max:300'
+            ],
+            'shippingRecipientAddress' => [
+                'nullable',
+                'required_with:shippingRecipientName',
+                'array'
+            ],
+            'shippingRecipientAddress.streetName' => [
+                'required_with:shippingRecipientAddress',
+                'string',
+                'max:300'
+            ],
+            'shippingRecipientAddress.cityName' => [
+                'required_with:shippingRecipientAddress',
+                'string',
+                'max:50'
+            ],
+            'shippingRecipientAddress.postalZone' => [
+                'required_with:shippingRecipientAddress',
+                'string',
+                'max:10'
+            ],
+            'shippingRecipientTIN' => [
+                'nullable',
+                'string',
+                'max:14',
+                'regex:/^[A-Z0-9]+$/' 
             ]
         ]);
 

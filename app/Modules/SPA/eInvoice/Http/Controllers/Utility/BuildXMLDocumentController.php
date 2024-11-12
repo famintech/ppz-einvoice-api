@@ -118,6 +118,33 @@ class BuildXMLDocumentController extends Controller
             $additionalDocumentReference->addChild('cbc:ID', $request->input('billReferenceNumber'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
+        // Add Delivery information if shipping recipient is provided
+        if ($request->input('shippingRecipientName')) {
+            $delivery = $xml->addChild('cac:Delivery', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add DeliveryParty
+            $deliveryParty = $delivery->addChild('cac:DeliveryParty', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add PartyLegalEntity for recipient name
+            $partyLegalEntity = $deliveryParty->addChild('cac:PartyLegalEntity', null, self::XML_NAMESPACES['xmlns:cac']);
+            $partyLegalEntity->addChild('cbc:RegistrationName', $request->input('shippingRecipientName'), self::XML_NAMESPACES['xmlns:cbc']);
+
+            // Add PostalAddress if provided
+            if ($request->input('shippingRecipientAddress')) {
+                $postalAddress = $deliveryParty->addChild('cac:PostalAddress', null, self::XML_NAMESPACES['xmlns:cac']);
+                $postalAddress->addChild('cbc:StreetName', $request->input('shippingRecipientAddress.streetName'), self::XML_NAMESPACES['xmlns:cbc']);
+                $postalAddress->addChild('cbc:CityName', $request->input('shippingRecipientAddress.cityName'), self::XML_NAMESPACES['xmlns:cbc']);
+                $postalAddress->addChild('cbc:PostalZone', $request->input('shippingRecipientAddress.postalZone'), self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
+            // Add PartyIdentification for TIN if provided
+            if ($request->input('shippingRecipientTIN')) {
+                $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
+                $id = $partyIdentification->addChild('cbc:ID', $request->input('shippingRecipientTIN'), self::XML_NAMESPACES['xmlns:cbc']);
+                $id->addAttribute('schemeID', 'TIN');
+            }
+        }
+
         // Add Legal Monetary Totals (mandatory)
         $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal', null, self::XML_NAMESPACES['xmlns:cac']);
 
