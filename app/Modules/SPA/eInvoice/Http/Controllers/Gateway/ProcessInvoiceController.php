@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildXMLDocumentController;
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildJSONDocumentController;
 use Carbon\Carbon;
-
+use Illuminate\Validation\Rule;
 class ProcessInvoiceController extends Controller
 {
     public function __invoke(Request $request)
@@ -276,6 +276,35 @@ class ProcessInvoiceController extends Controller
                 'string',
                 'max:14',
                 'regex:/^[A-Z0-9]+$/'
+            ],
+            'shippingRecipientRegistration' => [
+                'nullable',
+                'array'
+            ],
+            'shippingRecipientRegistration.type' => [
+                'required_with:shippingRecipientRegistration',
+                'string',
+                'in:NRIC,BRN,PASSPORT,ARMY'
+            ],
+            'shippingRecipientRegistration.number' => [
+                'required_with:shippingRecipientRegistration',
+                'string',
+                Rule::when(fn($input) => $input['shippingRecipientRegistration']['type'] === 'NRIC', [
+                    'size:12',
+                    'regex:/^[0-9]+$/'
+                ]),
+                Rule::when(fn($input) => $input['shippingRecipientRegistration']['type'] === 'BRN', [
+                    'size:20',
+                    'regex:/^[0-9]+$/'
+                ]),
+                Rule::when(fn($input) => $input['shippingRecipientRegistration']['type'] === 'PASSPORT', [
+                    'size:12',
+                    'regex:/^[A-Z0-9]+$/'
+                ]),
+                Rule::when(fn($input) => $input['shippingRecipientRegistration']['type'] === 'ARMY', [
+                    'size:12',
+                    'regex:/^[A-Z0-9]+$/'
+                ])
             ]
         ]);
 

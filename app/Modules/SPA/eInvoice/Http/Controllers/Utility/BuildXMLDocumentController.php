@@ -125,6 +125,27 @@ class BuildXMLDocumentController extends Controller
             // Add DeliveryParty
             $deliveryParty = $delivery->addChild('cac:DeliveryParty', null, self::XML_NAMESPACES['xmlns:cac']);
 
+            // Add PartyIdentification based on registration type
+            if ($request->input('shippingRecipientRegistration')) {
+                $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
+                $id = $partyIdentification->addChild('cbc:ID', $request->input('shippingRecipientRegistration.number'), self::XML_NAMESPACES['xmlns:cbc']);
+
+                switch ($request->input('shippingRecipientRegistration.type')) {
+                    case 'NRIC':
+                        $id->addAttribute('schemeID', 'NRIC');
+                        break;
+                    case 'BRN':
+                        $id->addAttribute('schemeID', 'BRN');
+                        break;
+                    case 'PASSPORT':
+                        $id->addAttribute('schemeID', 'PASSPORT');
+                        break;
+                    case 'ARMY':
+                        $id->addAttribute('schemeID', 'ARMY');
+                        break;
+                }
+            }
+
             // Add PartyIdentification for TIN if provided
             if ($request->input('shippingRecipientTIN')) {
                 $partyIdentification = $deliveryParty->addChild('cac:PartyIdentification', null, self::XML_NAMESPACES['xmlns:cac']);
