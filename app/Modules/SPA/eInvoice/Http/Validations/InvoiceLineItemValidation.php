@@ -72,6 +72,59 @@ class InvoiceLineItemValidation
                 'nullable',
                 'numeric',
                 'regex:/^\d+(\.\d{0,5})?$/'  // Decimal with up to 5 decimal places as recommended
+            ],
+            'invoiceLines.*.measurementUnit' => [
+                'nullable',
+                'required_with:invoiceLines.*.quantity',
+                'string',
+                'size:3'  // Following UN/ECE Recommendation 20
+            ],
+            'invoiceLines.*.discountRate' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',  // Decimal with up to 2 decimal places
+                'min:0',
+                'max:1'  // As it's a percentage in decimal form (0.15 = 15%)
+            ],
+            'invoiceLines.*.discountAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'  // Decimal with up to 2 decimal places
+            ],
+            'invoiceLines.*.discountReason' => [
+                'nullable',
+                'required_with:invoiceLines.*.discountAmount',
+                'string',
+                'max:300'
+            ],
+            'invoiceLines.*.feeRate' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',  // Decimal with up to 2 decimal places
+                'min:0',
+                'max:1'  // As it's a percentage in decimal form (0.10 = 10%)
+            ],
+            'invoiceLines.*.feeAmount' => [
+                'nullable',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'  // Decimal with up to 2 decimal places
+            ],
+            'invoiceLines.*.feeReason' => [
+                'nullable',
+                'required_with:invoiceLines.*.feeAmount',
+                'string',
+                'max:300'
+            ],
+            'invoiceLines.*.tariffCode' => [
+                'nullable',
+                'string',
+                'size:12',  // Based on example "9800.00.0010"
+                'regex:/^\d{4}\.\d{2}\.\d{4}$/'
+            ],
+            'invoiceLines.*.countryOfOrigin' => [
+                'nullable',
+                'string',
+                'size:3'  // Based on example "GBR"
             ]
         ];
     }

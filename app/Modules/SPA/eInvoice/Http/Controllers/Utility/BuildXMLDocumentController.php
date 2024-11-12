@@ -349,6 +349,66 @@ class BuildXMLDocumentController extends Controller
             $amount = $itemPriceExtension->addChild('cbc:Amount', $line['subtotal'], self::XML_NAMESPACES['xmlns:cbc']);
             $amount->addAttribute('currencyID', $request->input('currencyCode'));
 
+            // Add Measurement Unit Code if quantity is provided
+            if (isset($line['quantity'])) {
+                $invoicedQuantity = $invoiceLine->addChild('cbc:InvoicedQuantity', $line['quantity'], self::XML_NAMESPACES['xmlns:cbc']);
+                $invoicedQuantity->addAttribute('unitCode', $line['measurementUnit']);
+            }
+
+            // Add Allowance Charge for discount if provided
+            if (isset($line['discountRate'])) {
+                $allowanceCharge = $invoiceLine->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+                $allowanceCharge->addChild('cbc:ChargeIndicator', 'false', self::XML_NAMESPACES['xmlns:cbc']);
+                $allowanceCharge->addChild('cbc:MultiplierFactorNumeric', $line['discountRate'], self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
+            // Inside the invoice line items loop, update the allowance charge section
+            if (isset($line['discountAmount']) || isset($line['feeRate'])) {
+                // Add discount if provided
+                if (isset($line['discountAmount'])) {
+                    $allowanceCharge = $invoiceLine->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+                    $allowanceCharge->addChild('cbc:ChargeIndicator', 'false', self::XML_NAMESPACES['xmlns:cbc']);
+                    $amount = $allowanceCharge->addChild('cbc:Amount', $line['discountAmount'], self::XML_NAMESPACES['xmlns:cbc']);
+                    $amount->addAttribute('currencyID', $request->input('currencyCode'));
+
+                    if (isset($line['discountReason'])) {
+                        $allowanceCharge->addChild('cbc:AllowanceChargeReason', $line['discountReason'], self::XML_NAMESPACES['xmlns:cbc']);
+                    }
+                }
+
+                // Add fee/charge if provided
+                if (isset($line['feeRate'])) {
+                    $allowanceCharge = $invoiceLine->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+                    $allowanceCharge->addChild('cbc:ChargeIndicator', 'true', self::XML_NAMESPACES['xmlns:cbc']);
+                    $allowanceCharge->addChild('cbc:MultiplierFactorNumeric', $line['feeRate'], self::XML_NAMESPACES['xmlns:cbc']);
+                }
+            }
+
+            // Inside the invoice line items loop, update the allowance charge section for fee
+            if (isset($line['feeAmount'])) {
+                $allowanceCharge = $invoiceLine->addChild('cac:AllowanceCharge', null, self::XML_NAMESPACES['xmlns:cac']);
+                $allowanceCharge->addChild('cbc:ChargeIndicator', 'true', self::XML_NAMESPACES['xmlns:cbc']);
+                $amount = $allowanceCharge->addChild('cbc:Amount', $line['feeAmount'], self::XML_NAMESPACES['xmlns:cbc']);
+                $amount->addAttribute('currencyID', $request->input('currencyCode'));
+
+                if (isset($line['feeReason'])) {
+                    $allowanceCharge->addChild('cbc:AllowanceChargeReason', $line['feeReason'], self::XML_NAMESPACES['xmlns:cbc']);
+                }
+            }
+
+            // Add Product Tariff Code if provided
+            if (isset($line['tariffCode'])) {
+                $commodityClassification = $item->addChild('cac:CommodityClassification', null, self::XML_NAMESPACES['xmlns:cac']);
+                $itemClassificationCode = $commodityClassification->addChild('cbc:ItemClassificationCode', $line['tariffCode'], self::XML_NAMESPACES['xmlns:cbc']);
+                $itemClassificationCode->addAttribute('listID', 'PTC');
+            }
+
+            // Add Country of Origin if provided
+            if (isset($line['countryOfOrigin'])) {
+                $originCountry = $item->addChild('cac:OriginCountry', null, self::XML_NAMESPACES['xmlns:cac']);
+                $originCountry->addChild('cbc:IdentificationCode', $line['countryOfOrigin'], self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
             // Add Tax Amount
             $taxAmount = $taxSubtotal->addChild('cbc:TaxAmount', $line['taxAmount'], self::XML_NAMESPACES['xmlns:cbc']);
             $taxAmount->addAttribute('currencyID', $request->input('currencyCode'));
