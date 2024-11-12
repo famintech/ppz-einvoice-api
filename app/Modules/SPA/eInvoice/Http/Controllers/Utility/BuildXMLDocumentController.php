@@ -118,6 +118,22 @@ class BuildXMLDocumentController extends Controller
             $additionalDocumentReference->addChild('cbc:ID', $request->input('billReferenceNumber'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
+        // Add CustomsImportForm reference if provided
+        if ($request->input('customsFormReference')) {
+            $references = explode(',', $request->input('customsFormReference'));
+            foreach ($references as $reference) {
+                $additionalDocumentReference = $xml->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
+                $additionalDocumentReference->addChild('cbc:ID', $reference, self::XML_NAMESPACES['xmlns:cbc']);
+                $additionalDocumentReference->addChild('cbc:DocumentType', 'CustomsImportForm', self::XML_NAMESPACES['xmlns:cbc']);
+            }
+        }
+
+        // Add Incoterms if provided
+        if ($request->input('incoterms')) {
+            $additionalDocumentReference = $xml->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
+            $additionalDocumentReference->addChild('cbc:ID', $request->input('incoterms'), self::XML_NAMESPACES['xmlns:cbc']);
+        }
+
         // Add Delivery information if shipping recipient is provided
         if ($request->input('shippingRecipientName')) {
             $delivery = $xml->addChild('cac:Delivery', null, self::XML_NAMESPACES['xmlns:cac']);

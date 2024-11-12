@@ -9,6 +9,7 @@ use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildXMLDocumentController
 use App\Modules\SPA\eInvoice\Http\Controllers\Utility\BuildJSONDocumentController;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+
 class ProcessInvoiceController extends Controller
 {
     public function __invoke(Request $request)
@@ -305,6 +306,18 @@ class ProcessInvoiceController extends Controller
                     'size:12',
                     'regex:/^[A-Z0-9]+$/'
                 ])
+            ],
+            'customsFormReference' => [
+                'nullable',
+                'string',
+                'max:1000',
+                'regex:/^[A-Z0-9,]*$/'  // Only uppercase alphanumeric and commas
+            ],
+            'incoterms' => [
+                'nullable',
+                'string',
+                'size:3',
+                'regex:/^[A-Z]+$/'  // Only uppercase letters
             ]
         ]);
 
