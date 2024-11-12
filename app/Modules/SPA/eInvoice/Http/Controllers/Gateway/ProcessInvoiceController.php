@@ -318,6 +318,27 @@ class ProcessInvoiceController extends Controller
                 'string',
                 'size:3',
                 'regex:/^[A-Z]+$/'  // Only uppercase letters
+            ],
+            'freeTradeAgreement' => [
+                'nullable',
+                'array'
+            ],
+            'freeTradeAgreement.name' => [
+                'required_with:freeTradeAgreement',
+                'string',
+                'max:300',
+                'regex:/^[A-Za-z0-9\s\-()]+$/' // Only alphanumeric, spaces, dashes, and parentheses
+            ],
+            'freeTradeAgreement.description' => [
+                'nullable',
+                'string',
+                'max:300'
+            ],
+            'authorisationNumber' => [
+                'nullable',
+                'string',
+                'max:300',
+                'regex:/^[A-Za-z0-9\-]+$/' // Only alphanumeric and dashes
             ]
         ]);
 

@@ -134,6 +134,24 @@ class BuildXMLDocumentController extends Controller
             $additionalDocumentReference->addChild('cbc:ID', $request->input('incoterms'), self::XML_NAMESPACES['xmlns:cbc']);
         }
 
+        // Add Free Trade Agreement if provided
+        if ($request->input('freeTradeAgreement')) {
+            $additionalDocumentReference = $xml->addChild('cac:AdditionalDocumentReference', null, self::XML_NAMESPACES['xmlns:cac']);
+            $additionalDocumentReference->addChild('cbc:ID', 'FTA', self::XML_NAMESPACES['xmlns:cbc']);
+            $additionalDocumentReference->addChild('cbc:DocumentType', 'FreeTradeAgreement', self::XML_NAMESPACES['xmlns:cbc']);
+
+            if ($request->input('freeTradeAgreement.description')) {
+                $additionalDocumentReference->addChild('cbc:DocumentDescription', $request->input('freeTradeAgreement.description'), self::XML_NAMESPACES['xmlns:cbc']);
+            }
+        }
+
+        // Add Authorization Number if provided
+        if ($request->input('authorisationNumber')) {
+            $accountingSupplierParty = $xml->addChild('cac:AccountingSupplierParty', null, self::XML_NAMESPACES['xmlns:cac']);
+            $additionalAccountId = $accountingSupplierParty->addChild('cbc:AdditionalAccountID', $request->input('authorisationNumber'), self::XML_NAMESPACES['xmlns:cbc']);
+            $additionalAccountId->addAttribute('schemeAgencyName', 'CertEx');
+        }
+
         // Add Delivery information if shipping recipient is provided
         if ($request->input('shippingRecipientName')) {
             $delivery = $xml->addChild('cac:Delivery', null, self::XML_NAMESPACES['xmlns:cac']);
