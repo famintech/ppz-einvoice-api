@@ -16,33 +16,17 @@ class InvoiceLineItemValidation
                 'required',
                 'string',
                 'size:3',
-                'regex:/^\d{3}$/'  // Only 3 digits allowed
+                'regex:/^\d{3}$/'  // Must be 3 digits as per example "001"
             ],
             'invoiceLines.*.description' => [
                 'required',
                 'string',
-                'max:300'
+                'max:300'  // As specified in "NUMBER OF CHARS"
             ],
             'invoiceLines.*.unitPrice' => [
                 'required',
                 'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/'  // Decimal with up to 2 decimal places
-            ],
-            'invoiceLines.*.quantity' => [
-                'required',
-                'numeric',
-                'min:0',
-                'regex:/^\d+(\.\d{1,2})?$/'
-            ],
-            'invoiceLines.*.unitCode' => [
-                'required',
-                'string',
-                'max:3'
-            ],
-            'invoiceLines.*.lineAmount' => [
-                'required',
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/'
+                'regex:/^\d+(\.\d{1,2})?$/'  // Decimal with up to 2 decimal places as per example "17.00"
             ]
         ];
     }

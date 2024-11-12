@@ -292,6 +292,27 @@ class BuildXMLDocumentController extends Controller
         $taxAmount = $taxTotal->addChild('cbc:TaxAmount', $request->input('totalTaxAmount'), self::XML_NAMESPACES['xmlns:cbc']);
         $taxAmount->addAttribute('currencyID', $request->input('currencyCode'));
 
+        // Add Invoice Lines
+        foreach ($request->input('invoiceLines') as $line) {
+            $invoiceLine = $xml->addChild('cac:InvoiceLine', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add Item section
+            $item = $invoiceLine->addChild('cac:Item', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add Description
+            $item->addChild('cbc:Description', $line['description'], self::XML_NAMESPACES['xmlns:cbc']);
+
+            // Add Classification
+            $commodityClassification = $item->addChild('cac:CommodityClassification', null, self::XML_NAMESPACES['xmlns:cac']);
+            $itemClassificationCode = $commodityClassification->addChild('cbc:ItemClassificationCode', $line['classification'], self::XML_NAMESPACES['xmlns:cbc']);
+            $itemClassificationCode->addAttribute('listID', 'CLASS');
+
+            // Add Price section
+            $price = $invoiceLine->addChild('cac:Price', null, self::XML_NAMESPACES['xmlns:cac']);
+            $priceAmount = $price->addChild('cbc:PriceAmount', $line['unitPrice'], self::XML_NAMESPACES['xmlns:cbc']);
+            $priceAmount->addAttribute('currencyID', $request->input('currencyCode'));
+        }
+
         // Add TaxSubtotal elements
         if ($request->input('taxAmountPerType')) {
             $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal', null, self::XML_NAMESPACES['xmlns:cac']);
