@@ -296,6 +296,14 @@ class BuildXMLDocumentController extends Controller
         foreach ($request->input('invoiceLines') as $line) {
             $invoiceLine = $xml->addChild('cac:InvoiceLine', null, self::XML_NAMESPACES['xmlns:cac']);
 
+            // Add Line Extension Amount (Total Excluding Tax)
+            $lineExtensionAmount = $invoiceLine->addChild('cbc:LineExtensionAmount', $line['totalExcludingTax'], self::XML_NAMESPACES['xmlns:cbc']);
+            $lineExtensionAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            // Add Quantity if provided
+            if (isset($line['quantity'])) {
+                $invoicedQuantity = $invoiceLine->addChild('cbc:InvoicedQuantity', $line['quantity'], self::XML_NAMESPACES['xmlns:cbc']);
+            }
             // Add Item section
             $item = $invoiceLine->addChild('cac:Item', null, self::XML_NAMESPACES['xmlns:cac']);
 
@@ -311,6 +319,51 @@ class BuildXMLDocumentController extends Controller
             $price = $invoiceLine->addChild('cac:Price', null, self::XML_NAMESPACES['xmlns:cac']);
             $priceAmount = $price->addChild('cbc:PriceAmount', $line['unitPrice'], self::XML_NAMESPACES['xmlns:cbc']);
             $priceAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            // Add Tax Total for invoice line
+            $taxTotal = $invoiceLine->addChild('cac:TaxTotal', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add Tax Subtotal
+            $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal', null, self::XML_NAMESPACES['xmlns:cac']);
+
+            // Add Tax Rate if provided (for percentage-based tax)
+            if (isset($line['taxRate'])) {
+                $taxSubtotal->addChild('cbc:Percent', $line['taxRate'], self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
+            // Add Tax Category
+            $taxCategory = $taxSubtotal->addChild('cac:TaxCategory', null, self::XML_NAMESPACES['xmlns:cac']);
+            $taxCategory->addChild('cbc:ID', $line['taxType'], self::XML_NAMESPACES['xmlns:cbc']);
+
+            // Add Taxable Amount and Tax Exempted Amount
+            $taxableAmount = $taxSubtotal->addChild('cbc:TaxableAmount', $line['subtotal'], self::XML_NAMESPACES['xmlns:cbc']);
+            $taxableAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            if (isset($line['taxExemptedAmount'])) {
+                $taxExemptedAmount = $taxSubtotal->addChild('cbc:TaxExemptedAmount', $line['taxExemptedAmount'], self::XML_NAMESPACES['xmlns:cbc']);
+                $taxExemptedAmount->addAttribute('currencyID', $request->input('currencyCode'));
+            }
+
+            // Add Item Price Extension (Subtotal)
+            $itemPriceExtension = $invoiceLine->addChild('cac:ItemPriceExtension', null, self::XML_NAMESPACES['xmlns:cac']);
+            $amount = $itemPriceExtension->addChild('cbc:Amount', $line['subtotal'], self::XML_NAMESPACES['xmlns:cbc']);
+            $amount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            // Add Tax Amount
+            $taxAmount = $taxSubtotal->addChild('cbc:TaxAmount', $line['taxAmount'], self::XML_NAMESPACES['xmlns:cbc']);
+            $taxAmount->addAttribute('currencyID', $request->input('currencyCode'));
+
+            // Add Tax Exemption details if provided
+            if (isset($line['taxExemptionDetails'])) {
+                $taxCategory->addChild('cbc:TaxExemptionReason', $line['taxExemptionDetails'], self::XML_NAMESPACES['xmlns:cbc']);
+                $taxCategory->addChild('cbc:ID', 'E', self::XML_NAMESPACES['xmlns:cbc']);
+            }
+
+            // Add Tax Scheme with required attributes
+            $taxScheme = $taxCategory->addChild('cac:TaxScheme', null, self::XML_NAMESPACES['xmlns:cac']);
+            $taxSchemeId = $taxScheme->addChild('cbc:ID', 'OTH', self::XML_NAMESPACES['xmlns:cbc']);
+            $taxSchemeId->addAttribute('schemeID', 'UN/ECE 5153');
+            $taxSchemeId->addAttribute('schemeAgencyID', '6');
         }
 
         // Add TaxSubtotal elements
