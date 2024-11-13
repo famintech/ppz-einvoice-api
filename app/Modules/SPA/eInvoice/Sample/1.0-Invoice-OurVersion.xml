@@ -1,0 +1,189 @@
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+    <cbc:ID>INV12345</cbc:ID>
+    <cbc:IssueDate>2024-11-12</cbc:IssueDate>
+    <cbc:IssueTime>15:04:18Z</cbc:IssueTime>
+    <cbc:InvoiceTypeCode listVersionID="1.0">01</cbc:InvoiceTypeCode>
+    <cbc:DocumentCurrencyCode>MYR</cbc:DocumentCurrencyCode>
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReason>Early payment discount</cbc:AllowanceChargeReason>
+        <cbc:Amount currencyID="MYR">100.00</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReason>Processing fee</cbc:AllowanceChargeReason>
+        <cbc:Amount currencyID="MYR">100.00</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:InvoicePeriod>
+        <cbc:StartDate>2024-11-01</cbc:StartDate>
+        <cbc:EndDate>2024-11-30</cbc:EndDate>
+        <cbc:Description>Monthly</cbc:Description>
+    </cac:InvoicePeriod>
+    <cac:PaymentMeans>
+        <cbc:PaymentMeansCode>01</cbc:PaymentMeansCode>
+        <cac:PayeeFinancialAccount>
+            <cbc:ID>156226365993</cbc:ID>
+        </cac:PayeeFinancialAccount>
+    </cac:PaymentMeans>
+    <cac:PaymentTerms>
+        <cbc:Note>Payment method is Cash</cbc:Note>
+    </cac:PaymentTerms>
+    <cac:PrepaidPayment>
+        <cbc:ID>E12345678912</cbc:ID>
+        <cbc:PaidAmount currencyID="MYR">1.00</cbc:PaidAmount>
+        <cbc:PaidDate>2024-11-12</cbc:PaidDate>
+        <cbc:PaidTime>16:28:53Z</cbc:PaidTime>
+    </cac:PrepaidPayment>
+    <cac:BillingReference>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>E12345678912</cbc:ID>
+        </cac:AdditionalDocumentReference>
+    </cac:BillingReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>E23456789123</cbc:ID>
+        <cbc:DocumentType>CustomsImportForm</cbc:DocumentType>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>E98765432123</cbc:ID>
+        <cbc:DocumentType>CustomsImportForm</cbc:DocumentType>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>E1234567891</cbc:ID>
+        <cbc:DocumentType>K2</cbc:DocumentType>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>E2345678912</cbc:ID>
+        <cbc:DocumentType>K2</cbc:DocumentType>
+    </cac:AdditionalDocumentReference>
+    <cac:Delivery>
+        <cac:Shipment>
+            <cbc:ID>INV12345</cbc:ID>
+            <cac:FreightAllowanceCharge>
+                <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+                <cbc:Amount currencyID="MYR">100.00</cbc:Amount>
+                <cbc:AllowanceChargeReason>Service charge</cbc:AllowanceChargeReason>
+            </cac:FreightAllowanceCharge>
+        </cac:Shipment>
+    </cac:Delivery>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>CIF</cbc:ID>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>FTA</cbc:ID>
+        <cbc:DocumentType>FreeTradeAgreement</cbc:DocumentType>
+        <cbc:DocumentDescription>Free Trade Agreement details</cbc:DocumentDescription>
+    </cac:AdditionalDocumentReference>
+    <cac:AccountingSupplierParty>
+        <cbc:AdditionalAccountID schemeAgencyName="CertEx">CPT-CCN-W-211111-KL-000002</cbc:AdditionalAccountID>
+    </cac:AccountingSupplierParty>
+    <cac:Delivery>
+        <cac:DeliveryParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="NRIC">202001234567</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="TIN">C2584563200</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Greenz Sdn. Bhd.</cbc:RegistrationName>
+            </cac:PartyLegalEntity>
+            <cac:PostalAddress>
+                <cac:AddressLine>
+                    <cbc:Line>Lot 66</cbc:Line>
+                </cac:AddressLine>
+                <cac:AddressLine>
+                    <cbc:Line>Bangunan Merdeka</cbc:Line>
+                </cac:AddressLine>
+                <cac:AddressLine>
+                    <cbc:Line>Persiaran Jaya</cbc:Line>
+                </cac:AddressLine>
+                <cbc:CityName>Kuala Lumpur</cbc:CityName>
+                <cbc:PostalZone>50480</cbc:PostalZone>
+                <cbc:CountrySubentityCode>14</cbc:CountrySubentityCode>
+                <cac:Country>
+                    <cbc:IdentificationCode listID="ISO3166-1" listAgencyID="6">MYS</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:DeliveryParty>
+    </cac:Delivery>
+    <cac:LegalMonetaryTotal>
+        <cbc:TaxExclusiveAmount currencyID="MYR">1436.50</cbc:TaxExclusiveAmount>
+        <cbc:TaxInclusiveAmount currencyID="MYR">1436.50</cbc:TaxInclusiveAmount>
+        <cbc:AllowanceTotalAmount currencyID="MYR">1436.50</cbc:AllowanceTotalAmount>
+        <cbc:ChargeTotalAmount currencyID="MYR">1436.50</cbc:ChargeTotalAmount>
+        <cbc:PayableRoundingAmount currencyID="MYR">0.30</cbc:PayableRoundingAmount>
+        <cbc:PayableAmount currencyID="MYR">1436.50</cbc:PayableAmount>
+        <cbc:LineExtensionAmount currencyID="MYR">1436.50</cbc:LineExtensionAmount>
+    </cac:LegalMonetaryTotal>
+    <cac:TaxTotal>
+        <cbc:TaxAmount currencyID="MYR">87.63</cbc:TaxAmount>
+    </cac:TaxTotal>
+    <cac:InvoiceLine>
+        <cbc:LineExtensionAmount currencyID="MYR">1436.50</cbc:LineExtensionAmount>
+        <cbc:InvoicedQuantity>1.00</cbc:InvoicedQuantity>
+        <cac:Item>
+            <cbc:Description>Laptop Peripherals</cbc:Description>
+            <cac:CommodityClassification>
+                <cbc:ItemClassificationCode listID="CLASS">001</cbc:ItemClassificationCode>
+            </cac:CommodityClassification>
+            <cac:CommodityClassification>
+                <cbc:ItemClassificationCode listID="PTC">9800.00.0010</cbc:ItemClassificationCode>
+            </cac:CommodityClassification>
+            <cac:OriginCountry>
+                <cbc:IdentificationCode>GBR</cbc:IdentificationCode>
+            </cac:OriginCountry>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="MYR">17.00</cbc:PriceAmount>
+        </cac:Price>
+        <cac:TaxTotal>
+            <cac:TaxSubtotal>
+                <cbc:Percent>10</cbc:Percent>
+                <cac:TaxCategory>
+                    <cbc:ID>01</cbc:ID>
+                    <cbc:TaxExemptionReason>Goods acquired with SST exemption under Sales Tax Act 2018</cbc:TaxExemptionReason>
+                    <cbc:ID>E</cbc:ID>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">OTH</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+                <cbc:TaxableAmount currencyID="MYR">100.00</cbc:TaxableAmount>
+                <cbc:TaxExemptedAmount currencyID="MYR">1460.50</cbc:TaxExemptedAmount>
+                <cbc:TaxAmount currencyID="MYR">87.63</cbc:TaxAmount>
+            </cac:TaxSubtotal>
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="MYR">1460.50</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="MYR">87.63</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:ID>E</cbc:ID>
+                    <cbc:TaxExemptionReason>Exempt New Means of Transport</cbc:TaxExemptionReason>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">OTH</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        <cac:ItemPriceExtension>
+            <cbc:Amount currencyID="MYR">100.00</cbc:Amount>
+        </cac:ItemPriceExtension>
+        <cbc:InvoicedQuantity unitCode="KGM">1.00</cbc:InvoicedQuantity>
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+            <cbc:MultiplierFactorNumeric>0.15</cbc:MultiplierFactorNumeric>
+        </cac:AllowanceCharge>
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+            <cbc:Amount currencyID="MYR">1000.00</cbc:Amount>
+            <cbc:AllowanceChargeReason>Bulk purchase discount</cbc:AllowanceChargeReason>
+        </cac:AllowanceCharge>
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+            <cbc:MultiplierFactorNumeric>0.10</cbc:MultiplierFactorNumeric>
+        </cac:AllowanceCharge>
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+            <cbc:Amount currencyID="MYR">1000.00</cbc:Amount>
+            <cbc:AllowanceChargeReason>Processing fee</cbc:AllowanceChargeReason>
+        </cac:AllowanceCharge>
+    </cac:InvoiceLine>
+</Invoice>
